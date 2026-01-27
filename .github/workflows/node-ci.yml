@@ -1,0 +1,38 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    # Install and test server
+    - name: Install server dependencies
+      run: cd server && npm ci
+
+    - name: Run server tests
+      run: cd server && npm test
+
+    # Install and test client
+    - name: Install client dependencies
+      run: cd client && npm ci
+
+    - name: Run client tests
+      run: cd client && npm test
