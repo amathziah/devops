@@ -1,0 +1,32 @@
+name: Deploy Simulation
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Deploy to ${{ inputs.environment }}
+      run: |
+        echo "Simulating deployment to ${{ inputs.environment }}..."
+        echo "Validating configuration..."
+        sleep 2
+        echo "Building application..."
+        sleep 2
+        echo "Deploying artifacts..."
+        sleep 2
+        echo "Deployment to ${{ inputs.environment }} successful! 🚀"
