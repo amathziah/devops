@@ -45,7 +45,11 @@ describe('POST /items', () => {
         fs.readFileSync.mockReturnValue(JSON.stringify({ items: [] }));
     });
 
-    it('should create a new item', async () => {
+    const jwt = require('jsonwebtoken');
+
+    it('should create a new item when authenticated', async () => {
+        const token = jwt.sign({ id: '123', email: 'test@test.com' }, process.env.JWT_SECRET || 'your-secret-key');
+
         const newItem = {
             name: 'Test Item',
             description: 'This is a test item'
@@ -53,6 +57,7 @@ describe('POST /items', () => {
 
         const res = await request(app)
             .post('/items')
+            .set('Authorization', `Bearer ${token}`)
             .send(newItem)
             .set('Accept', 'application/json');
 
@@ -61,8 +66,5 @@ describe('POST /items', () => {
         expect(res.body).toHaveProperty('name', 'Test Item');
         expect(res.body).toHaveProperty('description', 'This is a test item');
         expect(res.body).toHaveProperty('createdAt');
-
-        // Optionally verify writeFileSync was called if you want strict testing
-        // expect(fs.writeFileSync).toHaveBeenCalled();
     });
 });

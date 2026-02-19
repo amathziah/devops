@@ -11,6 +11,11 @@ const DATA_FILE = path.join(__dirname, '../data.json');
 app.use(cors());
 app.use(express.json());
 
+const authRoutes = require('./routes/auth.routes');
+const authenticateToken = require('./middleware/auth.middleware');
+
+app.use('/auth', authRoutes);
+
 // Helper function to read data from JSON file
 const readData = () => {
   try {
@@ -44,13 +49,15 @@ app.get('/items', (req, res) => {
 });
 
 // POST /items - Add a new item
-app.post('/items', (req, res) => {
+app.post('/items', authenticateToken, (req, res) => {
   try {
     const data = readData();
     const newItem = {
       id: Date.now().toString(),
       name: req.body.name,
       description: req.body.description,
+      price: req.body.price || 0,
+      quantity: req.body.quantity || 0,
       createdAt: new Date().toISOString()
     };
     data.items.push(newItem);
@@ -65,23 +72,25 @@ app.post('/items', (req, res) => {
 });
 
 // PUT /items/:id - Update an item
-app.put('/items/:id', (req, res) => {
+app.put('/items/:id', authenticateToken, (req, res) => {
   try {
     const data = readData();
     const itemId = req.params.id;
     const itemIndex = data.items.findIndex(item => item.id === itemId);
-    
+
     if (itemIndex === -1) {
       return res.status(404).json({ error: 'Item not found' });
     }
-    
+
     data.items[itemIndex] = {
       ...data.items[itemIndex],
       name: req.body.name,
       description: req.body.description,
+      price: req.body.price,
+      quantity: req.body.quantity,
       updatedAt: new Date().toISOString()
     };
-    
+
     if (writeData(data)) {
       res.json(data.items[itemIndex]);
     } else {
@@ -93,16 +102,16 @@ app.put('/items/:id', (req, res) => {
 });
 
 // DELETE /items/:id - Delete an item
-app.delete('/items/:id', (req, res) => {
+app.delete('/items/:id', authenticateToken, (req, res) => {
   try {
     const data = readData();
     const itemId = req.params.id;
     const itemIndex = data.items.findIndex(item => item.id === itemId);
-    
+
     if (itemIndex === -1) {
       return res.status(404).json({ error: 'Item not found' });
     }
-    
+
     const deletedItem = data.items.splice(itemIndex, 1)[0];
     if (writeData(data)) {
       res.json({ message: 'Item deleted successfully', item: deletedItem });

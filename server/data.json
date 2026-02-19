@@ -1,10 +1,29 @@
 {
+  "users": [
+    {
+      "id": "1771495942697",
+      "email": "test1771495942246@example.com",
+      "password": "$2b$10$RORpNAnTUqSzsvr5HEMsUO9y9v3Q6uKOiNFxQ7aQjAUTcjHoOaYym"
+    },
+    {
+      "id": "1771496023529",
+      "email": "user1771496022948.8154@example.com",
+      "password": "$2b$10$lrbRgyp5j6iadKa90sF1RuDhQDNq88iUtxx7Y69PomT59fFvizwlC"
+    },
+    {
+      "id": "1771496023674",
+      "email": "test1771496022949@example.com",
+      "password": "$2b$10$UqbLq9dIQbX56IqYwTkf/uFzEdwmfcqLpqgMzgRd2ajQ8/8dWx6fe"
+    }
+  ],
   "items": [
     {
-      "id": "1769529166203",
-      "name": "Test Item",
-      "description": "This is a test item",
-      "createdAt": "2026-01-27T15:52:46.203Z"
+      "id": "1771496023843",
+      "name": "E2E Item",
+      "description": "E2E Description",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-02-19T10:13:43.843Z"
     }
   ]
 }
