@@ -14,6 +14,21 @@
       "id": "1771496023674",
       "email": "test1771496022949@example.com",
       "password": "$2b$10$UqbLq9dIQbX56IqYwTkf/uFzEdwmfcqLpqgMzgRd2ajQ8/8dWx6fe"
+    },
+    {
+      "id": "1771496286580",
+      "email": "user1771496285977.6624@example.com",
+      "password": "$2b$10$n9oqk20bK5hTN9GJJI1TjO6tkt3yPODNUf8heq2a1slmTpeN.W7Gu"
+    },
+    {
+      "id": "1771496370733",
+      "email": "user1771496370152.713@example.com",
+      "password": "$2b$10$sSSX6RSmfweC6G9d6vde.u/DT.VrkxzJcZ46Abdy8K0DurjfjCm3K"
+    },
+    {
+      "id": "1771496878131",
+      "email": "user1771496877446.0288@example.com",
+      "password": "$2b$10$6foN/KjWLfbXhOPBuq4yO.43CtnxZN5NN4hCvhC6OrxTjzDZhBpJ6"
     }
   ],
   "items": [
@@ -24,6 +39,30 @@
       "price": 0,
       "quantity": 0,
       "createdAt": "2026-02-19T10:13:43.843Z"
+    },
+    {
+      "id": "1771496286775",
+      "name": "E2E Item",
+      "description": "E2E Description",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-02-19T10:18:06.775Z"
+    },
+    {
+      "id": "1771496370925",
+      "name": "E2E Item",
+      "description": "E2E Description",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-02-19T10:19:30.925Z"
+    },
+    {
+      "id": "1771496878334",
+      "name": "E2E Item",
+      "description": "E2E Description",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-02-19T10:27:58.334Z"
     }
   ]
 }

@@ -1,0 +1,65 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - banner [ref=e5]:
+    - heading "ShopSmart CRUD App" [level=1] [ref=e6]
+    - button "Logout" [ref=e7] [cursor=pointer]
+  - generic [ref=e8]:
+    - heading "Add New Item" [level=2] [ref=e9]
+    - generic [ref=e10]:
+      - generic [ref=e11]:
+        - generic [ref=e12]: "Name:"
+        - textbox "Name:" [ref=e13]
+      - generic [ref=e14]:
+        - generic [ref=e15]: "Description:"
+        - textbox "Description:" [ref=e16]
+      - button "Add Item" [active] [ref=e17] [cursor=pointer]
+  - generic [ref=e18]:
+    - heading "Items (5)" [level=2] [ref=e19]
+    - list [ref=e20]:
+      - listitem [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - strong [ref=e24]: E2E Item
+            - paragraph [ref=e25]: E2E Description
+            - generic [ref=e26]: "Created: 2/19/2026, 3:43:43 PM"
+          - generic [ref=e27]:
+            - button "Edit" [ref=e28] [cursor=pointer]
+            - button "Delete" [ref=e29] [cursor=pointer]
+      - listitem [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - strong [ref=e33]: E2E Item
+            - paragraph [ref=e34]: E2E Description
+            - generic [ref=e35]: "Created: 2/19/2026, 3:48:06 PM"
+          - generic [ref=e36]:
+            - button "Edit" [ref=e37] [cursor=pointer]
+            - button "Delete" [ref=e38] [cursor=pointer]
+      - listitem [ref=e39]:
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - strong [ref=e42]: E2E Item
+            - paragraph [ref=e43]: E2E Description
+            - generic [ref=e44]: "Created: 2/19/2026, 3:49:30 PM"
+          - generic [ref=e45]:
+            - button "Edit" [ref=e46] [cursor=pointer]
+            - button "Delete" [ref=e47] [cursor=pointer]
+      - listitem [ref=e48]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - strong [ref=e51]: Item to Delete
+            - generic [ref=e52]: "Created: 2/19/2026, 3:57:58 PM"
+          - generic [ref=e53]:
+            - button "Edit" [ref=e54] [cursor=pointer]
+            - button "Delete" [ref=e55] [cursor=pointer]
+      - listitem [ref=e56]:
+        - generic [ref=e57]:
+          - generic [ref=e58]:
+            - strong [ref=e59]: E2E Item
+            - paragraph [ref=e60]: E2E Description
+            - generic [ref=e61]: "Created: 2/19/2026, 3:57:58 PM"
+          - generic [ref=e62]:
+            - button "Edit" [ref=e63] [cursor=pointer]
+            - button "Delete" [ref=e64] [cursor=pointer]
+```

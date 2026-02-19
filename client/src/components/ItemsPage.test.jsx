@@ -1,6 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ItemsPage from './ItemsPage';
-import { AuthProvider } from '../context/AuthContext';
 import { vi } from 'vitest';
 
 // Mock fetch
