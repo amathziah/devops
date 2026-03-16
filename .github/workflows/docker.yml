@@ -35,3 +35,14 @@ jobs:
           context: ./client
           push: true
           tags: ghcr.io/amathziah/devops/frontend:latest
+
+  health-check:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for deployment
+        run: sleep 15
+      - name: Check backend health
+        run: |
+          curl --fail https://shopsmart-backend.onrender.com/health
+          echo "Health check passed"
