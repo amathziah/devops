@@ -16,7 +16,7 @@ function ItemsPage() {
     const handleCheckout = () => {
         setCheckoutStatus('Processing...');
         setTimeout(() => {
-            setCheckoutStatus('Success! Your items have been purchased.');
+            setCheckoutStatus('Success');
             setItems([]); // Clear cart (simulation)
         }, 1500);
     };
@@ -169,9 +169,20 @@ function ItemsPage() {
                     )}
                 </div>
 
-                {checkoutStatus && (
-                    <div id="checkout-message" className="card" style={{ backgroundColor: '#e8f5e9', border: '1px solid #4CAF50' }}>
-                        <p>{checkoutStatus}</p>
+                {checkoutStatus === 'Success' && (
+                    <div className="checkout-overlay" onClick={() => setCheckoutStatus(null)}>
+                        <div className="checkout-modal">
+                            <div className="checkmark-circle">
+                                <div className="checkmark"></div>
+                            </div>
+                            <h2>Order Confirmed!</h2>
+                            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+                                Your items have been purchased successfully. Thank you for shopping with ShopSmart!
+                            </p>
+                            <button onClick={() => setCheckoutStatus(null)} style={{ width: '100%' }}>
+                                Continue Shopping
+                            </button>
+                        </div>
                     </div>
                 )}
 
