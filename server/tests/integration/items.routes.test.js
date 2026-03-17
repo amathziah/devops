@@ -93,5 +93,39 @@ describe('Items Routes', () => {
             expect(res.statusCode).toBe(200);
             expect(mockData.items).toHaveLength(0);
         });
+
+        it('should return 404 when item to delete does not exist', async () => {
+            const res = await request(app)
+                .delete('/items/999')
+                .set('Authorization', `Bearer ${token}`);
+
+            expect(res.statusCode).toBe(404);
+        });
+    });
+
+    describe('Edge Cases & Error Handling', () => {
+        it('should return 404 when item to update does not exist', async () => {
+            const res = await request(app)
+                .put('/items/999')
+                .set('Authorization', `Bearer ${token}`)
+                .send({ name: 'Fail' });
+
+            expect(res.statusCode).toBe(404);
+        });
+
+        it('should return 500 when readData fails', async () => {
+            fs.readFileSync.mockImplementationOnce(() => { throw new Error('Read Error'); });
+            const res = await request(app).get('/items');
+            expect(res.statusCode).toBe(500);
+        });
+
+        it('should return 500 when writeData fails on POST', async () => {
+            fs.writeFileSync.mockImplementationOnce(() => { throw new Error('Write Error'); });
+            const res = await request(app)
+                .post('/items')
+                .set('Authorization', `Bearer ${token}`)
+                .send({ name: 'Fail' });
+            expect(res.statusCode).toBe(500);
+        });
     });
 });

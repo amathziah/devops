@@ -8,9 +8,18 @@ function ItemsPage() {
     const [editingId, setEditingId] = useState(null);
     const [editName, setEditName] = useState('');
     const [editDescription, setEditDescription] = useState('');
+    const [checkoutStatus, setCheckoutStatus] = useState(null);
     const { token, logout } = useAuth();
 
     const API_URL = 'http://localhost:5001';
+
+    const handleCheckout = () => {
+        setCheckoutStatus('Processing...');
+        setTimeout(() => {
+            setCheckoutStatus('Success! Your items have been purchased.');
+            setItems([]); // Clear cart (simulation)
+        }, 1500);
+    };
 
     // Fetch all items
     const fetchItems = async () => {
@@ -147,7 +156,25 @@ function ItemsPage() {
 
             {/* Items List */}
             <div className="card">
-                <h2>Items ({items.length})</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h2>Items ({items.length})</h2>
+                    {items.length > 0 && (
+                        <button 
+                            id="checkout-btn" 
+                            onClick={handleCheckout} 
+                            style={{ backgroundColor: '#4CAF50' }}
+                        >
+                            Checkout
+                        </button>
+                    )}
+                </div>
+
+                {checkoutStatus && (
+                    <div id="checkout-message" className="card" style={{ backgroundColor: '#e8f5e9', border: '1px solid #4CAF50' }}>
+                        <p>{checkoutStatus}</p>
+                    </div>
+                )}
+
                 {items.length === 0 ? (
                     <p>No items found. Add some items above!</p>
                 ) : (

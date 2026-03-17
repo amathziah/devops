@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import Login from './Login';
 import { AuthProvider } from '../context/AuthContext';
 import { vi } from 'vitest';
@@ -8,11 +8,11 @@ import { vi } from 'vitest';
 global.fetch = vi.fn();
 
 const MockLogin = () => (
-    <BrowserRouter>
+    <MemoryRouter>
         <AuthProvider>
             <Login />
         </AuthProvider>
-    </BrowserRouter>
+    </MemoryRouter>
 );
 
 describe('Login Component', () => {

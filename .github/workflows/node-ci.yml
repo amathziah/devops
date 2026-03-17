@@ -30,11 +30,14 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Unit Tests
-        run: npm run test:unit
+      - name: Unit & Integration Tests
+        run: npm test -- --coverage
 
-      - name: Integration Tests
-        run: npm run test:integration
+      - name: Upload Coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: server/coverage
 
   # --- Frontend Pipeline ---
   frontend-test:
@@ -59,11 +62,41 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Tests
+        run: npm test -- --run --coverage
+
       - name: Build
         run: npm run build
 
-      - name: Tests
-        run: npm test -- --run
+      - name: Upload Coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: client/coverage
+
+  # --- E2E Pipeline ---
+  e2e-test:
+    name: Playwright E2E Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+      - name: Install Root Dependencies
+        run: npm install
+      - name: Install Client & Server Dependencies
+        run: npm run install:all
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run E2E tests
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
 
   # --- Infrastructure Validation ---
   infra-validation:

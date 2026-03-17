@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import ItemsPage from './ItemsPage';
 import { vi } from 'vitest';
 
@@ -41,7 +42,11 @@ describe('ItemsPage Component', () => {
     });
 
     it('renders Add New Item form', async () => {
-        render(<ItemsPage />);
+        render(
+            <MemoryRouter>
+                <ItemsPage />
+            </MemoryRouter>
+        );
         expect(screen.getByText('Add New Item')).toBeInTheDocument();
     });
 
@@ -52,7 +57,11 @@ describe('ItemsPage Component', () => {
             json: async () => mockItems,
         });
 
-        render(<ItemsPage />);
+        render(
+            <MemoryRouter>
+                <ItemsPage />
+            </MemoryRouter>
+        );
         await waitFor(() => {
             expect(screen.getByText('Item 1')).toBeInTheDocument();
         });
@@ -61,7 +70,11 @@ describe('ItemsPage Component', () => {
 
     it('adds a new item', async () => {
         fetch.mockResolvedValueOnce({ ok: true, json: async () => [] }); // initial load
-        render(<ItemsPage />);
+        render(
+            <MemoryRouter>
+                <ItemsPage />
+            </MemoryRouter>
+        );
 
         const nameInput = screen.getByLabelText(/Name:/i);
         const descInput = screen.getByLabelText(/Description:/i);
@@ -91,5 +104,34 @@ describe('ItemsPage Component', () => {
                 })
             }));
         });
+    });
+
+    it('handles checkout sequence', async () => {
+        const mockItems = [{ id: '1', name: 'Item 1', description: 'Desc 1', createdAt: new Date().toISOString() }];
+        fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => mockItems,
+        });
+
+        render(
+            <MemoryRouter>
+                <ItemsPage />
+            </MemoryRouter>
+        );
+        
+        await waitFor(() => {
+            expect(screen.getByText('Item 1')).toBeInTheDocument();
+        });
+
+        const checkoutBtn = screen.getByRole('button', { name: /Checkout/i });
+        fireEvent.click(checkoutBtn);
+
+        expect(screen.getByText(/Processing.../i)).toBeInTheDocument();
+
+        await waitFor(() => {
+            expect(screen.getByText(/Success! Your items have been purchased./i)).toBeInTheDocument();
+        }, { timeout: 2000 });
+
+        expect(screen.getByText(/No items found. Add some items above!/i)).toBeInTheDocument();
     });
 });

@@ -18,13 +18,8 @@ app.use('/auth', authRoutes);
 
 // Helper function to read data from JSON file
 const readData = () => {
-  try {
-    const data = fs.readFileSync(DATA_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading data file:', error);
-    return { items: [] };
-  }
+  const data = fs.readFileSync(DATA_FILE, 'utf8');
+  return JSON.parse(data);
 };
 
 // Helper function to write data to JSON file

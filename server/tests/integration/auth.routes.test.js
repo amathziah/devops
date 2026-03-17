@@ -97,5 +97,21 @@ describe('Auth Routes', () => {
 
             expect(res.statusCode).toBe(400);
         });
+
+        it('should fail if email is missing', async () => {
+            const res = await request(app)
+                .post('/auth/login')
+                .send({ password: '123' });
+            expect(res.statusCode).toBe(400);
+        });
+    });
+
+    describe('Signup Validation Edge Cases', () => {
+        it('should fail if email is missing', async () => {
+            const res = await request(app)
+                .post('/auth/signup')
+                .send({ password: '123' });
+            expect(res.statusCode).toBe(400);
+        });
     });
 });
