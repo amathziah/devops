@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import LoadingSpinner from './LoadingSpinner';
 
 const Signup = () => {
     const [email, setEmail] = useState('');
@@ -8,10 +9,14 @@ const Signup = () => {
     const { signup } = useAuth();
     const navigate = useNavigate();
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError('');
         const success = await signup(email, password);
+        setIsLoading(false);
         if (success) {
             navigate('/');
         } else {
@@ -21,6 +26,7 @@ const Signup = () => {
 
     return (
         <div className="container">
+            {isLoading && <LoadingSpinner />}
             <h2>Signup</h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit}>
