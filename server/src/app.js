@@ -23,4 +23,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
+const errorHandler = require('./middleware/error.middleware');
+app.use(errorHandler);
+
 module.exports = app;
