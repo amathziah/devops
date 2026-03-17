@@ -1,94 +1,130 @@
-# ShopSmart — Full Stack DevOps Project
+# 🛒 ShopSmart — Full Stack DevOps Project
 
-ShopSmart is a comprehensive full-stack application demonstrative of modern DevOps practices, featuring a React frontend, an Express backend, and a robust automation suite covering CI/CD, Containerization, Orchestration, Infrastructure as Code, and Monitoring.
+[![Node.js CI/CD](https://github.com/amathziah/devops/actions/workflows/node-ci.yml/badge.svg)](https://github.com/amathziah/devops/actions/workflows/node-ci.yml)
+[![Docker Build & Health](https://github.com/amathziah/devops/actions/workflows/docker.yml/badge.svg)](https://github.com/amathziah/devops/actions/workflows/docker.yml)
+[![Terraform Validate](https://github.com/amathziah/devops/actions/workflows/terraform.yml/badge.svg)](https://github.com/amathziah/devops/actions/workflows/terraform.yml)
 
-## 🚀 Tech Stack
+ShopSmart is a production-ready, full-stack application designed to showcase a modern **DevOps Automation Suite**. It features a high-performance React frontend, a scalable Node.js backend, and a comprehensive infrastructure layer covering CI/CD, Containerization, Orchestration, IaC, and Monitoring.
 
-- **Frontend**: React (Vite)
-- **Backend**: Node.js (Express)
-- **Database**: SQLite / JSON-based mock data
-- **Containerization**: Docker
-- **Orchestration**: Kubernetes (K8s), Docker Compose
-- **Infrastructure as Code**: Terraform
-- **CI/CD**: GitHub Actions
-- **Monitoring & Logging**: Prometheus, Grafana, Loki
+---
+
+## ✨ Features
+
+- **CRUD Application**: Complete Item management (Create, Read, Update, Delete).
+- **Secure Authentication**: JWT-based auth with protected routes and persistent sessions.
+- **Automated Testing**: 90%+ branch coverage with Unit, Integration, and Playwright E2E tests.
+- **Micro-animations**: Premium UX with glassmorphism and smooth transitions.
+- **Infrastructure as Code**: Fully automated environment provisioning via Terraform.
+- **Cloud-Native**: Kubernetes-ready manifests with liveness/readiness probes and resource limits.
+- **Observability**: Centralized logging and metrics with Prometheus, Grafana, and Loki.
+
+---
 
 ## 🏗️ Architecture
 
-```text
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐     ┌───────────────┐
-│             │     │              │     │             │     │               │
-│   GitHub    ├───▶ │  CI/CD (GHA) ├───▶ │Docker Images│───▶ │  K8s / Render │
-│             │     │              │     │   (GHCR)    │     │               │
-└─────────────┘     └──────────────┘     └─────────────┘     └───────────────┘
-                                                                     │
-                                                             ┌───────▼───────┐
-                                                             │               │
-                                                             │  Monitoring   │
-                                                             │  (Grafana)    │
-                                                             │               │
-                                                             └───────────────┘
+```mermaid
+graph TD
+    User([User Browser]) <-->|HTTPS| LB[Load Balancer / Ingress]
+    LB <--> FE[React Frontend]
+    FE <-->|API Calls| BE[Express Backend]
+    BE <-->|Read/Write| DB[(JSON/Disk DB)]
+    
+    subgraph "CI/CD Pipeline"
+        Git[GitHub Repo] -->|Actions| CI[Node-CI: Lint & Test]
+        CI -->|Success| CD[Docker: Build & Push]
+        CD -->|Deploy| K8s[Kubernetes Cluster]
+    end
+    
+    subgraph "Observability"
+        K8s -->|Logs| Loki[Loki]
+        K8s -->|Metrics| Prom[Prometheus]
+        Prom --> Grafana[Grafana Dashboards]
+    end
 ```
+
+---
 
 ## 📁 Project Structure
 
 ```text
 .
-├── client/                     # React Frontend
-│   └── src/                    # Frontend source code
-├── server/                     # Express Backend
-│   └── src/                    # Backend source code
-├── k8s/                        # Kubernetes manifests
-│   ├── backend-deployment.yml
-│   └── frontend-deployment.yml
-├── terraform/                  # Terraform IaC
-│   └── main.tf
-├── monitoring/                 # Observability stack
-│   ├── docker-compose.monitoring.yml
-│   └── prometheus.yml
-├── scripts/                    # Automation scripts
-│   └── setup.sh
-└── .github/workflows/          # CI/CD Workflows
-    ├── node-ci.yml             # Tests & Linting
-    ├── docker.yml              # Build, Push & Health Check
-    └── terraform.yml           # IaC Validation
+├── client/                     # React (Vite) Frontend
+│   ├── src/components/         # UI Components & Tests
+│   └── src/context/            # Auth & Global State
+├── server/                     # Node.js (Express) Backend
+│   ├── src/routes/             # API Endpoints
+│   └── tests/                  # Integration & Unit Tests
+├── e2e/                        # Playwright E2E Test Suite
+├── k8s/                        # Production K8s Manifests
+├── terraform/                  # Infrastructure as Code
+├── monitoring/                 # Prometheus & Grafana Config
+└── .github/workflows/          # Automated Pipelines
 ```
+
+---
 
 ## 🛠️ Local Setup
 
-The project includes an idempotent setup script to simplify onboarding:
+Get the environment up and running in minutes:
 
 ```bash
-# 1. Run the automation setup script (Installs deps + starts Docker)
-./scripts/setup.sh
+# 1. Clone the repository
+git clone https://github.com/amathziah/devops.git && cd devops
 
-# Or 2. Start manually via Docker Compose
-docker-compose up -d
+# 2. Run the idempotent setup script
+chmod +x scripts/setup.sh
+./scripts/setup.sh
 ```
 
-- **Frontend**: [http://localhost:3000](http://localhost:3000)
-- **Backend**: [http://localhost:5000](http://localhost:5000)
+### Manual Controls
+- **Start Services**: `docker-compose up -d`
+- **Run Frontend**: `cd client && npm run dev`
+- **Run Backend**: `cd server && npm start`
 
-## 🔄 CI/CD Pipeline
+---
 
-The project uses three main GitHub Actions workflows:
+## 🧪 Testing Strategy
 
-1.  **`node-ci.yml`**: Runs on every PR/push. Installs dependencies and executes unit/integration tests for both client and server.
-2.  **`docker.yml`**: Triggers on push to `main`. Builds Docker images, pushes them to GHCR, and performs a 15s-delayed post-deploy health check.
-3.  **`terraform.yml`**: Validates Infrastructure as Code on every pull request using `terraform fmt`, `init`, and `validate`.
+We maintain high quality through a multi-layered testing approach:
 
-## ☸️ Kubernetes
+- **Unit Tests**: `npm run test:unit` (Isolated logic testing)
+- **Integration Tests**: `npm run test:integration` (API & DB interaction)
+- **E2E Tests**: `npm run test:e2e` (Full user journey verification)
 
-Deploy the application to a Kubernetes cluster using the provided manifests:
+> Coverage reports are automatically generated and enforced in CI (80% minimum).
+
+---
+
+## ☸️ Kubernetes Deployment
+
+The application is containerized and ready for orchestration:
 
 ```bash
 kubectl apply -f k8s/
 ```
+Deployments include **Resource Quotas** and **Health Probes** to ensure high availability and stability.
 
-- **Backend**: Internal `ClusterIP` on port 5000.
-- **Frontend**: `NodePort` mapping port 3000 to internal port 80.
+---
 
-## 🌍 Terraform
+## 🌍 Infrastructure as Code (IaC)
+
+Infrastructure is managed via Terraform for consistency across environments:
+
+```bash
+cd terraform
+terraform init && terraform validate
+```
+
+---
+
+## 📊 Monitoring & Observability
+
+Access the real-time health and performance dashboards:
+
+- **Grafana**: `http://localhost:3001` (Default: `admin/admin`)
+- **Prometheus**: `http://localhost:9090`
+- **Loki**: Log exploration via Grafana "Explore" tab.
+orm
 
 Manage Docker infrastructure using Terraform:
 
