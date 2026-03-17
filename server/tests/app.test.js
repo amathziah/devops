@@ -6,12 +6,12 @@ const fs = require('fs');
 
 // Setup default mock implementation
 // This ensures that when app.js calls readData(), it gets a fresh empty state
-fs.readFileSync.mockImplementation((file, encoding) => {
+fs.readFileSync.mockImplementation(() => {
     return JSON.stringify({ items: [] });
 });
 
 // Mock writeFileSync to do nothing
-fs.writeFileSync.mockImplementation((file, data) => {
+fs.writeFileSync.mockImplementation(() => {
     return undefined;
 });
 
