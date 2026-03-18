@@ -10,16 +10,8 @@ terraform {
 
 provider "docker" {}
 
-variable "backend_image" {
-  description = "Docker image for backend"
-  type        = string
-  default     = "ghcr.io/amathziah/devops/backend:latest"
-}
-
-variable "frontend_image" {
-  description = "Docker image for frontend"
-  type        = string
-  default     = "ghcr.io/amathziah/devops/frontend:latest"
+locals {
+  full_project_name = "${var.project_name}-${var.environment}"
 }
 
 resource "docker_image" "backend" {
@@ -33,39 +25,31 @@ resource "docker_image" "frontend" {
 }
 
 resource "docker_network" "private_network" {
-  name = "shopsmart_network"
+  name = "${local.full_project_name}_network"
 }
 
 resource "docker_container" "backend" {
   image = docker_image.backend.image_id
-  name  = "shopsmart-backend-prod"
+  name  = "${local.full_project_name}-backend"
   networks_advanced {
     name = docker_network.private_network.name
   }
   ports {
     internal = 5000
-    external = 5000
+    external = var.backend_port
   }
   restart = "unless-stopped"
 }
 
 resource "docker_container" "frontend" {
   image = docker_image.frontend.image_id
-  name  = "shopsmart-frontend-prod"
+  name  = "${local.full_project_name}-frontend"
   networks_advanced {
     name = docker_network.private_network.name
   }
   ports {
     internal = 80
-    external = 3000
+    external = var.frontend_port
   }
   restart = "unless-stopped"
-}
-
-output "backend_url" {
-  value = "http://localhost:5000"
-}
-
-output "frontend_url" {
-  value = "http://localhost:3000"
 }
