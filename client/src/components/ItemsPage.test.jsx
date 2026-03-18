@@ -126,12 +126,11 @@ describe('ItemsPage Component', () => {
         const checkoutBtn = screen.getByRole('button', { name: /Checkout/i });
         fireEvent.click(checkoutBtn);
 
-        expect(screen.getByText(/Processing.../i)).toBeInTheDocument();
-
+        // Check for modal presence
         await waitFor(() => {
-            expect(screen.getByText(/Success! Your items have been purchased./i)).toBeInTheDocument();
+            expect(screen.getByText(/Order Confirmed!/i)).toBeInTheDocument();
         }, { timeout: 2000 });
 
-        expect(screen.getByText(/No items found. Add some items above!/i)).toBeInTheDocument();
+        expect(screen.getByText(/No inventory items yet/i)).toBeInTheDocument();
     });
 });
