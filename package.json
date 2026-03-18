@@ -10,6 +10,7 @@
     "test:integration:backend": "npm run test:integration --prefix server",
     "test:unit:frontend": "npm run test --prefix client",
     "test:e2e": "npx playwright test",
+    "lint": "concurrently \"npm run lint --prefix server\" \"npm run lint --prefix client\"",
     "prepare": "husky"
   },
   "devDependencies": {
