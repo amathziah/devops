@@ -25,36 +25,52 @@ const Signup = () => {
     };
 
     return (
-        <div className="container">
-            {isLoading && <LoadingSpinner />}
-            <h2>Signup</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="signup-email">Email:</label>
-                    <input
-                        id="signup-email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="signup-password">Password:</label>
-                    <input
-                        id="signup-password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Signup</button>
-            </form>
-            <p>
-                Already have an account? <Link to="/login">Login</Link>
-            </p>
+        <div className="container" style={{ maxWidth: '450px' }}>
+            <div className="card" style={{ marginBottom: 0 }}>
+                {isLoading && <LoadingSpinner />}
+                <h1 style={{ fontSize: '2rem', marginBottom: '1.5rem' }}>Create Account</h1>
+                <p style={{ textAlign: 'center', color: 'var(--text-muted)', marginBottom: '2rem' }}>Join ShopSmart and start managing</p>
+                
+                {error && <div style={{ 
+                    padding: '0.75rem', 
+                    background: 'hsla(0, 84%, 60%, 0.1)', 
+                    color: 'var(--danger)', 
+                    borderRadius: '8px', 
+                    marginBottom: '1.5rem',
+                    fontSize: '0.875rem',
+                    textAlign: 'center'
+                }}>{error}</div>}
+
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor="signup-email">Email Address</label>
+                        <input
+                            id="signup-email"
+                            type="email"
+                            placeholder="name@company.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="signup-password">Password</label>
+                        <input
+                            id="signup-password"
+                            type="password"
+                            placeholder="Min 6 characters"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" style={{ marginTop: '1rem' }}>Create Free Account</button>
+                </form>
+                
+                <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                    Already have an account? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>Login</Link>
+                </p>
+            </div>
         </div>
     );
 };

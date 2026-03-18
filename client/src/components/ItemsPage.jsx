@@ -99,7 +99,7 @@ function ItemsPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2>Inventory ({items.length})</h2>
                     {items.length > 0 && (
-                        <button id="checkout-btn" onClick={handleCheckout} style={{ background: 'var(--success)' }}>
+                        <button className="checkout-btn-main" onClick={handleCheckout}>
                             🛒 Checkout
                         </button>
                     )}
@@ -116,7 +116,7 @@ function ItemsPage() {
                                 Your items have been successfully purchased and are on the way.
                                 Thank you for choosing ShopSmart!
                             </p>
-                            <button onClick={() => setCheckoutStatus(null)} style={{ width: '100%' }}>
+                            <button className="primary-btn" onClick={() => setCheckoutStatus(null)} style={{ width: '100%' }}>
                                 Back to Inventory
                             </button>
                         </div>

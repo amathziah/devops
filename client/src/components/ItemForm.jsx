@@ -13,31 +13,36 @@ const ItemForm = ({ onAdd }) => {
     };
 
     return (
-        <div className="card">
-            <h2>Add New Item</h2>
+        <div className="card" style={{ background: 'linear-gradient(to bottom right, var(--card-bg), hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.05))' }}>
+            <h2>Create New Asset</h2>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Add a new item to your decentralized inventory tracking system.</p>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="item-name">Name:</label>
-                    <input
-                        id="item-name"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Item name..."
-                        required
-                    />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                    <div>
+                        <label htmlFor="item-name">Asset Name</label>
+                        <input
+                            id="item-name"
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="e.g. Server Rack A1"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="item-desc">Reference / Desc</label>
+                        <input
+                            id="item-desc"
+                            type="text"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="e.g. Primary cluster"
+                        />
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="item-desc">Description:</label>
-                    <input
-                        id="item-desc"
-                        type="text"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Optional description..."
-                    />
-                </div>
-                <button type="submit">Add Item</button>
+                <button type="submit" className="primary-btn" style={{ width: '100%' }}>
+                    ✨ Deploy Item to Inventory
+                </button>
             </form>
         </div>
     );
