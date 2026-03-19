@@ -47,7 +47,7 @@ describe('ItemsPage Component', () => {
                 <ItemsPage />
             </MemoryRouter>
         );
-        expect(screen.getByText('Add New Item')).toBeInTheDocument();
+        expect(screen.getByText('✨ Create New Item')).toBeInTheDocument();
     });
 
     it('fetches items on mount', async () => {
@@ -131,6 +131,6 @@ describe('ItemsPage Component', () => {
             expect(screen.getByText(/Order Confirmed!/i)).toBeInTheDocument();
         }, { timeout: 2000 });
 
-        expect(screen.getByText(/No inventory items yet/i)).toBeInTheDocument();
+        expect(screen.getByText(/No items found/i)).toBeInTheDocument();
     });
 });

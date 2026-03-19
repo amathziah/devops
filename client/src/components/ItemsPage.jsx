@@ -4,7 +4,7 @@ import ItemForm from './ItemForm';
 import Item from './Item';
 import LoadingSpinner from './LoadingSpinner';
 
-const API_URL = 'http://localhost:5001';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 function ItemsPage() {
     const [items, setItems] = useState([]);

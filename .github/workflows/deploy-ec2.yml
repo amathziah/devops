@@ -52,6 +52,19 @@ jobs:
                 PORT=3000 pm2 start src/index.js --name "shopsmart-backend"
                 pm2 startup
             fi
+            # 6. Build the Frontend
+            cd ~/app/client
+            npm install
+            VITE_API_URL=http://16.171.174.153:3000 npm run build
+
+            # 7. Serve the Frontend using PM2
+            pm2 describe shopsmart-frontend > /dev/null
+            if [ $? -eq 0 ]; then
+                pm2 restart shopsmart-frontend
+            else
+                pm2 serve dist 5173 --name "shopsmart-frontend" --spa
+                pm2 startup
+            fi
             
-            # 6. Save current PM2 processes to resurrect on reboot
+            # 8. Save all current processes to resurrect on reboot
             pm2 save
