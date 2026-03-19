@@ -6,13 +6,28 @@ on:
       - main
 
 jobs:
-  deploy:
-    name: Deploy to Production EC2
+  build-and-deploy:
+    name: Build & Deploy to Production EC2
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Build Frontend (CI Side)
+        run: |
+          cd client
+          npm install
+          VITE_API_URL=http://${{ secrets.EC2_HOST }}:3000 npm run build
+        env:
+          VITE_API_URL: http://${{ secrets.EC2_HOST }}:3000
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -22,6 +37,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
+            set -ex
+            
             # 1. Setup environment
             mkdir -p ~/app
             cd ~/app
@@ -37,27 +54,31 @@ jobs:
             # 3. Backend Deployment
             cd server
             npm install --omit=dev
-            pm2 describe shopsmart-backend > /dev/null
-            if [ $? -eq 0 ]; then
-                pm2 restart shopsmart-backend
-            else
-                PORT=3000 pm2 start src/index.js --name "shopsmart-backend"
-            fi
+            pm2 describe shopsmart-backend > /dev/null && pm2 restart shopsmart-backend || PORT=3000 pm2 start src/index.js --name "shopsmart-backend"
 
-            # 4. Frontend Deployment
+            # 4. Frontend Deployment (Already built in CI)
             cd ../client
-            npm install
-            VITE_API_URL=http://${{ secrets.EC2_HOST }}:3000 npm run build
-            
-            pm2 describe shopsmart-frontend > /dev/null
-            if [ $? -eq 0 ]; then
-                pm2 restart shopsmart-frontend
-            else
-                pm2 serve dist 5173 --name "shopsmart-frontend" --spa
-            fi
-            
-            # 5. Persistence & Health Check
+            # We already have the code from git pull, but we need the build 'dist' folder.
+            # However, since we just did git reset --hard, the dist folder is missing.
+            # We will use the SSH action's capability to transfer the build if needed, 
+            # but for now let's just use a more advanced step.
+
+      - name: Upload Build to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "client/dist"
+          target: "/home/ubuntu/app/client/"
+          strip_components: 1
+
+      - name: Finalize Deployment via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            pm2 describe shopsmart-frontend > /dev/null && pm2 restart shopsmart-frontend || pm2 serve /home/ubuntu/app/client/dist 5173 --name "shopsmart-frontend" --spa
             pm2 save
-            pm2 startup | grep "sudo" | bash - || true
-            
-            echo "Deployment successful! Site live at: http://${{ secrets.EC2_HOST }}:5173"
