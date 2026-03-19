@@ -64,6 +64,36 @@
       "id": "1773903994305",
       "email": "user1773903993433@example.com",
       "password": "$2b$10$v4s3bwfdXr8ymq7uwpQ.IOPxE8vdwKRvmi8dsjwSzDx0G5omQzR0W"
+    },
+    {
+      "id": "1773910379555",
+      "email": "test1773910376050@example.com",
+      "password": "$2b$10$lUrD32y5OajK23NRFuWXheEDgAuJLXrfl3PS9Z.AHZc7NEvFNB7I2"
+    },
+    {
+      "id": "1773910383914",
+      "email": "user1773910382583@example.com",
+      "password": "$2b$10$fcmwncToMZe1vudvzWmzXOyodvaSp7BzXzZHcmGcjGStToZ9qYBai"
+    },
+    {
+      "id": "1773910581507",
+      "email": "user1773910579912.9353@example.com",
+      "password": "$2b$10$Vx4ghDYO6p0zIqatBDBeXeznOwdoJ4bj1h9taWbQKxx4HiTj7.vlO"
+    },
+    {
+      "id": "1773910582530",
+      "email": "user1773910581637@example.com",
+      "password": "$2b$10$wlN.OUaAa3XKM4ELvBKbZ.rV9Q6LAXCUEfuStVmLKSlaany/nzXzW"
+    },
+    {
+      "id": "1773910896695",
+      "email": "test1773910894992@example.com",
+      "password": "$2b$10$3Dvl3Kksx8dSqS8KH6g21OiCGDm92ntScAppAUkCYyWF.tkmLtcQu"
+    },
+    {
+      "id": "1773910896984",
+      "email": "user1773910895995@example.com",
+      "password": "$2b$10$e8Xk8/vMwYcGk3D/.YvQ5u9FwEGEUWS8VJ7mkaBsTPKdb0USs.4q2"
     }
   ],
   "items": [
@@ -154,6 +184,38 @@
       "price": 0,
       "quantity": 0,
       "createdAt": "2026-03-19T07:06:34.375Z"
+    },
+    {
+      "id": "1773910385227",
+      "name": "Test Item 1773910382583",
+      "description": "Premium testing item",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-19T08:53:05.227Z"
+    },
+    {
+      "id": "1773910582622",
+      "name": "Test Item 1773910581637",
+      "description": "Premium testing item",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-19T08:56:22.622Z"
+    },
+    {
+      "id": "1773910896770",
+      "name": "E2E Item",
+      "description": "E2E Description",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-19T09:01:36.770Z"
+    },
+    {
+      "id": "1773910897065",
+      "name": "Test Item 1773910895995",
+      "description": "Premium testing item",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-19T09:01:37.065Z"
     }
   ]
 }

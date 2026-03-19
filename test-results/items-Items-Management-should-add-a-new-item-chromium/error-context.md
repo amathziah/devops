@@ -14,11 +14,11 @@
     - generic [ref=e15]:
       - generic [ref=e16]:
         - generic [ref=e17]: 📦
-        - generic [ref=e18]: "10"
+        - generic [ref=e18]: "14"
         - generic [ref=e19]: Total Items
       - generic [ref=e20]:
         - generic [ref=e21]: 🕐
-        - generic [ref=e22]: "2"
+        - generic [ref=e22]: "6"
         - generic [ref=e23]: Added Today
       - generic [ref=e24]:
         - generic [ref=e25]: ✅
@@ -37,12 +37,12 @@
             - generic [ref=e37]: Description
             - textbox "Description" [ref=e38]:
               - /placeholder: e.g. Dev team workstation
-        - button "Add Item →" [ref=e39] [cursor=pointer]
+        - button "Add Item →" [active] [ref=e39] [cursor=pointer]
     - generic [ref=e41]:
       - generic [ref=e42]:
         - generic [ref=e43]:
           - heading "Inventory" [level=2] [ref=e44]
-          - generic [ref=e45]: 10 items total
+          - generic [ref=e45]: 14 items total
         - button "🛒 Checkout" [ref=e46] [cursor=pointer]
       - list [ref=e47]:
         - listitem [ref=e48]:
@@ -155,4 +155,48 @@
           - generic [ref=e155]:
             - button "Edit" [ref=e156] [cursor=pointer]
             - button "Delete" [ref=e157] [cursor=pointer]
+        - listitem [ref=e158]:
+          - generic [ref=e159]:
+            - generic [ref=e160]: 💎
+            - generic [ref=e161]: Active
+          - generic [ref=e162]:
+            - heading "Test Item 1773903993433" [level=3] [ref=e163]
+            - paragraph [ref=e164]: Premium testing item
+            - generic [ref=e165]: "Created: 3/19/2026, 12:36:34 PM"
+          - generic [ref=e166]:
+            - button "Edit" [ref=e167] [cursor=pointer]
+            - button "Delete" [ref=e168] [cursor=pointer]
+        - listitem [ref=e169]:
+          - generic [ref=e170]:
+            - generic [ref=e171]: 🎯
+            - generic [ref=e172]: Active
+          - generic [ref=e173]:
+            - heading "Test Item 1773910382583" [level=3] [ref=e174]
+            - paragraph [ref=e175]: Premium testing item
+            - generic [ref=e176]: "Created: 3/19/2026, 2:23:05 PM"
+          - generic [ref=e177]:
+            - button "Edit" [ref=e178] [cursor=pointer]
+            - button "Delete" [ref=e179] [cursor=pointer]
+        - listitem [ref=e180]:
+          - generic [ref=e181]:
+            - generic [ref=e182]: ⚡
+            - generic [ref=e183]: Active
+          - generic [ref=e184]:
+            - heading "Test Item 1773910581637" [level=3] [ref=e185]
+            - paragraph [ref=e186]: Premium testing item
+            - generic [ref=e187]: "Created: 3/19/2026, 2:26:22 PM"
+          - generic [ref=e188]:
+            - button "Edit" [ref=e189] [cursor=pointer]
+            - button "Delete" [ref=e190] [cursor=pointer]
+        - listitem [ref=e191]:
+          - generic [ref=e192]:
+            - generic [ref=e193]: 🔬
+            - generic [ref=e194]: Active
+          - generic [ref=e195]:
+            - heading "E2E Item" [level=3] [ref=e196]
+            - paragraph [ref=e197]: E2E Description
+            - generic [ref=e198]: "Created: 3/19/2026, 2:31:36 PM"
+          - generic [ref=e199]:
+            - button "Edit" [ref=e200] [cursor=pointer]
+            - button "Delete" [ref=e201] [cursor=pointer]
 ```

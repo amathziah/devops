@@ -23,7 +23,7 @@ test.describe('Items Management', () => {
         const itemName = 'E2E Item';
         const itemDesc = 'E2E Description';
 
-        await page.fill('label:has-text("Name:") + input', itemName); // Use sibling selector or id if available
+        await page.fill('label:has-text("Item Name") + input', itemName); // Use sibling selector or id if available
         // Wait, I fail to use ID in my mind. I added IDs in previous step!
         // Let's use IDs.
         await page.fill('#item-name', itemName);
