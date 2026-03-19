@@ -41,11 +41,11 @@ jobs:
             set -ex
             mkdir -p ~/app
             cd ~/app
-            if [ ! -d ".git" ]; then
-              git clone https://github.com/amathziah/devops.git .
-            else
+            if [ -d ".git" ]; then
               git fetch --all
               git reset --hard origin/main
+            else
+              git clone https://github.com/amathziah/devops.git .
             fi
             cd server
             npm install --omit=dev
