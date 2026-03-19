@@ -11,7 +11,7 @@ describe('App Integration', () => {
         render(<App />);
         // Should show Login page
         await waitFor(() => {
-            expect(screen.getByText(/Login/i, { selector: 'h2' })).toBeInTheDocument();
+            expect(screen.getByText(/Welcome Back/i, { selector: 'h2' })).toBeInTheDocument();
         });
     });
 });
