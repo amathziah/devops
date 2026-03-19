@@ -1,0 +1,56 @@
+name: Secure Automated EC2 Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy via Secure SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
+          script: |
+            # 1. Ensure the app directory exists and navigate to it
+            mkdir -p ~/app
+            cd ~/app
+            
+            # 2. Check if this is the first deployment or an update
+            if [ ! -d ".git" ]; then
+              # First deployment: clone the repo (Replace with YOUR actual repository SSH URL)
+              # e.g. git@github.com:amathziah/shopsmart-devops.git
+              git clone git@github.com:amathziah/devops.git .
+            else
+              # Subsequent deployments: Pull latest code securely
+              git reset --hard
+              git pull origin main
+            fi
+
+            # 3. Enter the server directory (since your backend is in the 'server' folder)
+            cd server
+
+            # 4. Install dependencies (idempotent step)
+            npm install --omit=dev
+
+            # 5. Stop existing PM2 process if it exists, or start a new one
+            pm2 describe shopsmart-backend > /dev/null
+            if [ $? -eq 0 ]; then
+                pm2 restart shopsmart-backend
+            else
+                pm2 start src/index.js --name "shopsmart-backend"
+                pm2 startup
+            fi
+            
+            # 6. Save current PM2 processes to resurrect on reboot
+            pm2 save
