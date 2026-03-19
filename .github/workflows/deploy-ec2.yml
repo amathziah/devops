@@ -49,7 +49,7 @@ jobs:
             if [ $? -eq 0 ]; then
                 pm2 restart shopsmart-backend
             else
-                pm2 start src/index.js --name "shopsmart-backend"
+                PORT=3000 pm2 start src/index.js --name "shopsmart-backend"
                 pm2 startup
             fi
             
