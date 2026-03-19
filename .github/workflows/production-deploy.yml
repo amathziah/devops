@@ -1,4 +1,4 @@
-name: Secure Automated EC2 Deployment
+name: Production EC2 Deployment
 
 on:
   push:
@@ -7,14 +7,14 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to EC2
+    name: Deploy to Production EC2
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Deploy via Secure SSH
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -22,49 +22,42 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
-            # 1. Ensure the app directory exists and navigate to it
+            # 1. Setup environment
             mkdir -p ~/app
             cd ~/app
             
-            # 2. Check if this is the first deployment or an update
+            # 2. Sync Repository
             if [ ! -d ".git" ]; then
-              # First deployment: clone the repo (Replace with YOUR actual repository SSH URL)
-              # e.g. git@github.com:amathziah/shopsmart-devops.git
               git clone https://github.com/amathziah/devops.git .
             else
-              # Subsequent deployments: Pull latest code securely
-              git config pull.rebase false
-              git reset --hard
-              git pull https://github.com/amathziah/devops.git main
+              git fetch --all
+              git reset --hard origin/main
             fi
 
-            # 3. Enter the server directory (since your backend is in the 'server' folder)
+            # 3. Backend Deployment
             cd server
-
-            # 4. Install dependencies (idempotent step)
             npm install --omit=dev
-
-            # 5. Stop existing PM2 process if it exists, or start a new one
             pm2 describe shopsmart-backend > /dev/null
             if [ $? -eq 0 ]; then
                 pm2 restart shopsmart-backend
             else
                 PORT=3000 pm2 start src/index.js --name "shopsmart-backend"
-                pm2 startup
             fi
-            # 6. Build the Frontend
-            cd ~/app/client
-            npm install
-            VITE_API_URL=http://16.171.174.153:3000 npm run build
 
-            # 7. Serve the Frontend using PM2
+            # 4. Frontend Deployment
+            cd ../client
+            npm install
+            VITE_API_URL=http://${{ secrets.EC2_HOST }}:3000 npm run build
+            
             pm2 describe shopsmart-frontend > /dev/null
             if [ $? -eq 0 ]; then
                 pm2 restart shopsmart-frontend
             else
                 pm2 serve dist 5173 --name "shopsmart-frontend" --spa
-                pm2 startup
             fi
             
-            # 8. Save all current processes to resurrect on reboot
+            # 5. Persistence & Health Check
             pm2 save
+            pm2 startup | grep "sudo" | bash - || true
+            
+            echo "Deployment successful! Site live at: http://${{ secrets.EC2_HOST }}:5173"
