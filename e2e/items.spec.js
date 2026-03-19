@@ -20,29 +20,33 @@ test.describe('Items Management', () => {
     });
 
     test('should add a new item', async ({ page }) => {
-        const itemName = 'E2E Item';
-        const itemDesc = 'E2E Description';
+        const uniqueSuffix = Date.now().toString().slice(-4);
+        const itemName = `E2E Item ${uniqueSuffix}`;
+        const itemDesc = `E2E Description ${uniqueSuffix}`;
 
-        await page.fill('label:has-text("Item Name") + input', itemName); // Use sibling selector or id if available
-        // Wait, I fail to use ID in my mind. I added IDs in previous step!
-        // Let's use IDs.
         await page.fill('#item-name', itemName);
         await page.fill('#item-desc', itemDesc);
         await page.click('button:has-text("Add Item")');
 
-        await expect(page.getByText(itemName)).toBeVisible();
-        await expect(page.getByText(itemDesc)).toBeVisible();
+        // Scoped expectation to avoid strict mode violations if other items exist
+        const itemRow = page.locator('li').filter({ hasText: itemName });
+        await expect(itemRow).toBeVisible();
+        await expect(itemRow.getByText(itemDesc)).toBeVisible();
     });
 
     test('should delete an item', async ({ page }) => {
+        const uniqueSuffix = Date.now().toString().slice(-4);
+        const itemName = `Item to Delete ${uniqueSuffix}`;
+        
         // Add item first
-        const itemName = 'Item to Delete';
         await page.fill('#item-name', itemName);
         await page.click('button:has-text("Add Item")');
-        await expect(page.getByText(itemName)).toBeVisible();
+        
+        const itemRow = page.locator('li').filter({ hasText: itemName });
+        await expect(itemRow).toBeVisible();
 
         // Delete it
-        await page.click(`li:has-text("${itemName}") button:has-text("Delete")`);
+        await itemRow.getByRole('button', { name: 'Delete' }).click();
         await expect(page.getByText(itemName)).not.toBeVisible();
     });
 });
