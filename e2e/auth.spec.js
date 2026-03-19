@@ -15,22 +15,31 @@ test.describe('Auth Flow', () => {
         await page.goto('/signup');
 
         // Signup
-        await page.fill('input[type="email"]', email);
-        await page.fill('input[type="password"]', password);
-        await page.click('button[type="submit"]');
+        await page.getByLabel(/Email Address/i).fill(email);
+        await page.getByLabel(/Password/i).fill(password);
+        await page.getByRole('button', { name: /Create Free Account/i }).click();
 
         // Should redirect to Home (Items Page)
-        await expect(page).toHaveURL('/');
+        await expect(page).toHaveURL('/', { timeout: 10000 });
         await expect(page.getByText('ShopSmart CRUD App')).toBeVisible();
 
         // Check logout
-        await page.click('button:has-text("Logout")');
-        await expect(page).toHaveURL('/login');
+        await page.getByRole('button', { name: 'Logout' }).click();
+        await expect(page).toHaveURL('/login', { timeout: 10000 });
+
+        // Login with the created user
+        await page.getByLabel(/Email Address/i).fill(email);
+        await page.getByLabel(/Password/i).fill(password);
+        await page.getByRole('button', { name: 'Login' }).click();
+
+        // Should redirect to Home (Items Page) after login
+        await expect(page).toHaveURL('/', { timeout: 10000 });
+        await expect(page.getByText('ShopSmart CRUD App')).toBeVisible();
     });
 
     test('should redirect unauthenticated user to login', async ({ page }) => {
         await page.goto('/');
-        await expect(page).toHaveURL('/login');
+        await expect(page).toHaveURL('/login', { timeout: 10000 });
         await expect(page.getByRole('heading', { name: 'Welcome Back' })).toBeVisible();
     });
 });

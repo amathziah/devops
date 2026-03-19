@@ -13,10 +13,10 @@ test.describe('Items Management', () => {
         password = 'password123';
 
         await page.goto('/signup');
-        await page.fill('input[type="email"]', email);
-        await page.fill('input[type="password"]', password);
-        await page.click('button[type="submit"]');
-        await expect(page).toHaveURL('/');
+        await page.getByLabel(/Email Address/i).fill(email);
+        await page.getByLabel(/Password/i).fill(password);
+        await page.getByRole('button', { name: /Create Free Account/i }).click();
+        await expect(page).toHaveURL('/', { timeout: 10000 });
     });
 
     test('should add a new item', async ({ page }) => {

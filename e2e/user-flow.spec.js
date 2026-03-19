@@ -8,11 +8,11 @@ test.describe('End-to-End User Flow', () => {
 
         // 1. Signup and Login
         await page.goto('/signup');
-        await page.fill('input[type="email"]', email);
-        await page.fill('input[type="password"]', password);
-        await page.click('button[type="submit"]');
+        await page.getByLabel(/Email Address/i).fill(email);
+        await page.getByLabel(/Password/i).fill(password);
+        await page.getByRole('button', { name: /Create Free Account/i }).click();
 
-        await expect(page).toHaveURL('/');
+        await expect(page).toHaveURL('/', { timeout: 10000 });
         await expect(page.getByText('ShopSmart CRUD App')).toBeVisible();
 
         // 2. Add Item

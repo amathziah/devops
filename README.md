@@ -1,131 +1,69 @@
-# 🛒 ShopSmart — Full Stack DevOps Project
+# ShopSmart — Premium Inventory Management Platform
 
-[![Node.js CI/CD](https://github.com/amathziah/devops/actions/workflows/node-ci.yml/badge.svg)](https://github.com/amathziah/devops/actions/workflows/node-ci.yml)
-[![Docker Build & Health](https://github.com/amathziah/devops/actions/workflows/docker.yml/badge.svg)](https://github.com/amathziah/devops/actions/workflows/docker.yml)
-[![Terraform Validate](https://github.com/amathziah/devops/actions/workflows/terraform.yml/badge.svg)](https://github.com/amathziah/devops/actions/workflows/terraform.yml)
+ShopSmart is a modern, full-stack inventory management solution designed for speed, reliability, and visual excellence. Built with a production-grade DevOps pipeline, it features automated deployments, containerized service management, and comprehensive end-to-end testing.
 
-ShopSmart is a production-ready, full-stack application designed to showcase a modern **DevOps Automation Suite**. It features a high-performance React frontend, a scalable Node.js backend, and a comprehensive infrastructure layer covering CI/CD, Containerization, Orchestration, IaC, and Monitoring.
+## 🚀 Key Features
 
----
+- **Inventory Tracking:** Real-time CRUD operations for managing business assets.
+- **Premium UI/UX:** A stunning, dark-mode-first design with glassmorphism, smooth animations, and a focus on visual hierarchy.
+- **Secure Authentication:** Integrated JWT-based auth flow with protected routes and personalized sessions.
+- **Automated DevOps:** Consolidated GitHub Actions pipeline for linting, testing, Docker builds, and EC2 deployments.
+- **High-Availability:** Managed via PM2 for zero-downtime serving of both Backend and Frontend.
 
-## ✨ Features
+## 🛠️ Tech Stack
 
-- **CRUD Application**: Complete Item management (Create, Read, Update, Delete).
-- **Secure Authentication**: JWT-based auth with protected routes and persistent sessions.
-- **Automated Testing**: 90%+ branch coverage with Unit, Integration, and Playwright E2E tests.
-- **Micro-animations**: Premium UX with glassmorphism and smooth transitions.
-- **Infrastructure as Code**: Fully automated environment provisioning via Terraform.
-- **Cloud-Native**: Kubernetes-ready manifests with liveness/readiness probes and resource limits.
-- **Observability**: Centralized logging and metrics with Prometheus, Grafana, and Loki.
+- **Frontend:** React, Vite, Vanilla CSS (Premium Custom Styles).
+- **Backend:** Node.js, Express.
+- **Testing:** Vitest (Unit/Integration), Playwright (End-to-End).
+- **DevOps:** GitHub Actions, Docker, PM2, SSH/SCP Automation.
+- **Cloud:** AWS EC2.
 
----
+## 📦 Getting Started
 
-## 🏗️ Architecture
+### Prerequisites
+- Node.js (v20.x recommended)
+- Git
 
-```mermaid
-graph TD
-    User([User Browser]) <-->|HTTPS| LB[Load Balancer / Ingress]
-    LB <--> FE[React Frontend]
-    FE <-->|API Calls| BE[Express Backend]
-    BE <-->|Read/Write| DB[(JSON/Disk DB)]
-    
-    subgraph "CI/CD Pipeline"
-        Git[GitHub Repo] -->|Actions| CI[Node-CI: Lint & Test]
-        CI -->|Success| CD[Docker: Build & Push]
-        CD -->|Deploy| K8s[Kubernetes Cluster]
-    end
-    
-    subgraph "Observability"
-        K8s -->|Logs| Loki[Loki]
-        K8s -->|Metrics| Prom[Prometheus]
-        Prom --> Grafana[Grafana Dashboards]
-    end
-```
+### Local Installation
 
----
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/amathziah/devops.git
+   cd devops
+   ```
 
-## 📁 Project Structure
+2. **Install all dependencies:**
+   ```bash
+   npm run install:all
+   ```
 
-```text
-.
-├── client/                     # React (Vite) Frontend
-│   ├── src/components/         # UI Components & Tests
-│   └── src/context/            # Auth & Global State
-├── server/                     # Node.js (Express) Backend
-│   ├── src/routes/             # API Endpoints
-│   └── tests/                  # Integration & Unit Tests
-├── e2e/                        # Playwright E2E Test Suite
-├── k8s/                        # Production K8s Manifests
-├── terraform/                  # Infrastructure as Code
-├── monitoring/                 # Prometheus & Grafana Config
-└── .github/workflows/          # Automated Pipelines
-```
+3. **Start the Development Servers:**
+   ```bash
+   npm run dev
+   ```
+   The backend will start on [http://localhost:5001](http://localhost:5001) and the frontend on [http://localhost:5173](http://localhost:5173).
 
----
+## 🧪 Testing
 
-## 🛠️ Local Setup
+We maintain high quality through a multi-layered testing strategy:
 
-Get the environment up and running in minutes:
+- **Frontend:** `cd client && npm test`
+- **Backend:** `cd server && npm test`
+- **E2E:** `npm run test:e2e` (Run `npx playwright test --ui` for interactive mode)
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/amathziah/devops.git && cd devops
+## 🚢 Deployment
 
-# 2. Run the idempotent setup script
-chmod +x scripts/setup.sh
-./scripts/setup.sh
-```
+The project is fully automated. Simply push to the `main` branch to trigger:
+1. **Linting & Unit Tests**
+2. **End-to-End Tests**
+3. **Docker Image Build & Push** (GHCR)
+4. **Production Deployment** to AWS EC2 using the optimized `production-deploy.yml`.
 
-### Manual Controls
-- **Start Services**: `docker-compose up -d`
-- **Run Frontend**: `cd client && npm run dev`
-- **Run Backend**: `cd server && npm start`
+## 📈 Monitoring & Scalability
+
+The project includes pre-configured monitoring and orchestration templates:
+- **Prometheus/Grafana:** See `/monitoring`.
+- **Kubernetes:** Manifests located in `/k8s`.
 
 ---
-
-## 🧪 Testing Strategy
-
-We maintain high quality through a multi-layered testing approach:
-
-- **Unit Tests**: `npm run test:unit` (Isolated logic testing)
-- **Integration Tests**: `npm run test:integration` (API & DB interaction)
-- **E2E Tests**: `npm run test:e2e` (Full user journey verification)
-
-> Coverage reports are automatically generated and enforced in CI (80% minimum).
-
----
-
-## ☸️ Kubernetes Deployment
-
-The application is containerized and ready for orchestration:
-
-```bash
-kubectl apply -f k8s/
-```
-Deployments include **Resource Quotas** and **Health Probes** to ensure high availability and stability.
-
----
-
-## 🌍 Infrastructure as Code (IaC)
-
-Infrastructure is managed via Terraform for consistency across environments:
-
-```bash
-cd terraform
-terraform init && terraform validate
-```
-
----
-
-## 📊 Monitoring & Observability
-
-Access the real-time health and performance dashboards:
-
-- **Grafana**: `http://localhost:3001` (Default: `admin/admin`)
-- **Prometheus**: `http://localhost:9090`
-- **Loki**: Log exploration via Grafana "Explore" tab.
----
-
-## 📄 License
-
-This project is built for educational and demonstration purposes.
+*Built with ❤️ by Antigravity*
