@@ -8,9 +8,12 @@ ShopSmart is a modern, full-stack inventory management solution designed for spe
 - **Premium UI/UX:** A stunning, dark-mode-first design with glassmorphism, smooth animations, and a focus on visual hierarchy.
 - **Secure Authentication:** Integrated JWT-based auth flow with protected routes and personalized sessions.
 - **Automated DevOps:** Consolidated GitHub Actions pipeline for linting, testing, Docker builds, and EC2 deployments.
-- **High-Availability:** Managed via PM2 for zero-downtime serving of both Backend and Frontend.
+## 🚢 Live Deployment
 
-## 🛠️ Tech Stack
+- **Frontend Platform:** [http://16.171.174.153:5173](http://16.171.174.153:5173) 🟢
+- **Backend Health:** [http://16.171.174.153:3000/health](http://16.171.174.153:3000/health) 🟢
+
+## 🚢 Automated Pipeline
 
 - **Frontend:** React, Vite, Vanilla CSS (Premium Custom Styles).
 - **Backend:** Node.js, Express.
