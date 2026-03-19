@@ -29,6 +29,41 @@
       "id": "1771496878131",
       "email": "user1771496877446.0288@example.com",
       "password": "$2b$10$6foN/KjWLfbXhOPBuq4yO.43CtnxZN5NN4hCvhC6OrxTjzDZhBpJ6"
+    },
+    {
+      "id": "1773768135311",
+      "email": "test@example.com",
+      "password": "$2b$10$1ioIJCvn06DMumLoIQxx1.C2UOekXqCb9pbtpxbaqn6154DiCgeMi"
+    },
+    {
+      "id": "1773862779151",
+      "email": "newuser@example.com",
+      "password": "$2b$10$z3YhIRFIChnIyWwmPk24/uaVUKEopBayd3kDYEzlpCVEACeJHfiA2"
+    },
+    {
+      "id": "1773903529201",
+      "email": "test1773903527904@example.com",
+      "password": "$2b$10$V9HPFK2tVpiJMj36x.2AHeN0lG3y6ldQ1AOqAqsodw6ZMAICe9ALe"
+    },
+    {
+      "id": "1773903529428",
+      "email": "user1773903527945.8413@example.com",
+      "password": "$2b$10$XXDAUj2D0Vk/1G1E8JWc.eeasqUy7C8i2KewUZML7FPJVryzE2IgW"
+    },
+    {
+      "id": "1773903530749",
+      "email": "user1773903529459@example.com",
+      "password": "$2b$10$Kp6PxN08bo1/3rr/BL0lYuO4rSw3D7zTP1bK.mlA6fv6TSar7sb/e"
+    },
+    {
+      "id": "1773903993225",
+      "email": "user1773903991577.2578@example.com",
+      "password": "$2b$10$jTkYiIFcj0zxGQiXOv0XZOFyOJTBChCGn05jK7LmU0fak4A1THiYC"
+    },
+    {
+      "id": "1773903994305",
+      "email": "user1773903993433@example.com",
+      "password": "$2b$10$v4s3bwfdXr8ymq7uwpQ.IOPxE8vdwKRvmi8dsjwSzDx0G5omQzR0W"
     }
   ],
   "items": [
@@ -63,6 +98,62 @@
       "price": 0,
       "quantity": 0,
       "createdAt": "2026-02-19T10:27:58.334Z"
+    },
+    {
+      "id": "1773768147138",
+      "name": "Laptop",
+      "description": "High performance",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-17T17:22:27.138Z"
+    },
+    {
+      "id": "1773768150526",
+      "name": "Mouse",
+      "description": "Wireless optical",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-17T17:22:30.526Z"
+    },
+    {
+      "id": "1773768217683",
+      "name": "Premium Item 1",
+      "description": "This is a premium item with glassmorphism.",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-17T17:23:37.683Z"
+    },
+    {
+      "id": "1773768250504",
+      "name": "Premium Item 2",
+      "description": "Another premium item with micro-animations.",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-17T17:24:10.505Z"
+    },
+    {
+      "id": "1773863115164",
+      "name": "something",
+      "description": "ssss",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-18T19:45:15.164Z"
+    },
+    {
+      "id": "1773903530823",
+      "name": "Test Item 1773903529459",
+      "description": "Premium testing item",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-19T06:58:50.823Z"
+    },
+    {
+      "id": "1773903994375",
+      "name": "Test Item 1773903993433",
+      "description": "Premium testing item",
+      "price": 0,
+      "quantity": 0,
+      "createdAt": "2026-03-19T07:06:34.375Z"
     }
   ]
 }

@@ -81,7 +81,33 @@ Every `push` and `pull_request` to the `main` branch triggers:
 
 ---
 
-## 🛠️ 5. Automated EC2 Management
+## 🧪 5. Testing Strategy
+
+We follow the **Testing Pyramid** to balance speed and confidence:
+
+| Layer | Tool | Location | Purpose |
+|-------|------|----------|---------|
+| **Unit** | Jest (backend), Vitest (frontend) | `server/tests/unit/`, `client/src/**/*.test.jsx` | Isolate individual functions and components |
+| **Integration** | Supertest + Jest | `server/tests/integration/` | Validate API routes interact correctly with data layer |
+| **E2E** | Playwright | `e2e/` | Simulate real user journeys (Signup → Login → CRUD → Checkout → Logout) |
+
+- **Coverage thresholds** are enforced at 80% for statements, functions, and lines (configured in both `server/package.json` and `client/vite.config.js`).
+- Coverage reports are generated automatically in CI via `--coverage` flags and uploaded as build artifacts.
+
+---
+
+## 🔒 6. PR Quality Gates & Linting
+
+Every code change passes through multiple quality checkpoints:
+
+1. **Pre-commit Hook (Local):** Husky triggers `lint-staged` on every commit, running ESLint only on staged files to catch issues before they reach the remote.
+2. **CI Lint Step:** The `node-ci.yml` workflow runs `npm run lint` with `--max-warnings 0` for both client and server — any warning fails the build.
+3. **Automated PR Checks:** Pull requests to `main` trigger the full pipeline (lint + unit + integration + E2E + Terraform validate). All checks must pass before merge.
+4. **Dependabot:** Automatically scans npm dependencies and GitHub Actions for security vulnerabilities on a weekly schedule.
+
+---
+
+## 🛠️ 7. Automated EC2 Management
 
 The project includes a robust `ec2-deploy.yml` workflow that:
 - Securely connects via SSH using GitHub Secrets.

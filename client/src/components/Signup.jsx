@@ -20,56 +20,74 @@ const Signup = () => {
         if (success) {
             navigate('/');
         } else {
-            setError('Failed to sign up');
+            setError('Could not create account. Email may already be in use.');
         }
     };
 
     return (
-        <div className="container" style={{ maxWidth: '450px' }}>
-            <div className="card" style={{ marginBottom: 0 }}>
-                {isLoading && <LoadingSpinner />}
-                <h1 style={{ fontSize: '2rem', marginBottom: '1.5rem' }}>Create Account</h1>
-                <p style={{ textAlign: 'center', color: 'var(--text-muted)', marginBottom: '2rem' }}>Join ShopSmart and start managing</p>
-                
-                {error && <div style={{ 
-                    padding: '0.75rem', 
-                    background: 'hsla(0, 84%, 60%, 0.1)', 
-                    color: 'var(--danger)', 
-                    borderRadius: '8px', 
-                    marginBottom: '1.5rem',
-                    fontSize: '0.875rem',
-                    textAlign: 'center'
-                }}>{error}</div>}
+        <div className="auth-page">
+            {isLoading && <LoadingSpinner />}
 
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="signup-email">Email Address</label>
-                        <input
-                            id="signup-email"
-                            type="email"
-                            placeholder="name@company.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+            {/* Left: Hero */}
+            <div className="auth-hero">
+                <div className="auth-hero-grid" />
+                <div className="auth-hero-content">
+                    <div className="auth-hero-logo">ShopSmart</div>
+                    <p className="auth-hero-tagline">
+                        Join thousands of teams that trust ShopSmart for their asset management needs.
+                    </p>
+                    <ul className="auth-hero-features">
+                        <li>Instant setup, no credit card</li>
+                        <li>Full-stack DevOps pipeline</li>
+                        <li>Containerized deployment</li>
+                        <li>Production-grade security</li>
+                    </ul>
+                </div>
+            </div>
+
+            {/* Right: Form */}
+            <div className="auth-form-section">
+                <div className="auth-form-container">
+                    <div className="auth-form-header">
+                        <h2>Create Account</h2>
+                        <p>Get started with ShopSmart for free</p>
                     </div>
-                    <div>
-                        <label htmlFor="signup-password">Password</label>
-                        <input
-                            id="signup-password"
-                            type="password"
-                            placeholder="Min 6 characters"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <button type="submit" style={{ marginTop: '1rem' }}>Create Free Account</button>
-                </form>
-                
-                <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                    Already have an account? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>Login</Link>
-                </p>
+
+                    {error && <div className="error-alert">{error}</div>}
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="signup-email">Email Address</label>
+                            <input
+                                id="signup-email"
+                                type="email"
+                                placeholder="name@company.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="signup-password">Password</label>
+                            <input
+                                id="signup-password"
+                                type="password"
+                                placeholder="Min 6 characters"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <button type="submit" style={{ width: '100%', marginTop: '0.5rem' }}>
+                            Create Free Account →
+                        </button>
+                    </form>
+
+                    <p className="auth-footer">
+                        Already have an account?{' '}
+                        <Link to="/login">Sign In</Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

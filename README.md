@@ -124,26 +124,8 @@ Access the real-time health and performance dashboards:
 - **Grafana**: `http://localhost:3001` (Default: `admin/admin`)
 - **Prometheus**: `http://localhost:9090`
 - **Loki**: Log exploration via Grafana "Explore" tab.
-orm
+---
 
-Manage Docker infrastructure using Terraform:
+## 📄 License
 
-```bash
-cd terraform
-terraform init
-terraform plan
-terraform apply
-```
-
-## 📊 Monitoring
-
-Monitor the application performance and logs using the observability stack:
-
-```bash
-# Start the monitoring stack
-docker-compose -f monitoring/docker-compose.monitoring.yml up -d
-```
-
-- **Grafana**: [http://localhost:3001](http://localhost:3001) (Credentials: `admin` / `admin`)
-- **Prometheus**: [http://localhost:9090](http://localhost:9090)
-- **Loki**: [http://localhost:3100](http://localhost:3100) (Log aggregation)
+This project is built for educational and demonstration purposes.

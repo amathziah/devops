@@ -20,56 +20,74 @@ const Login = () => {
         if (success) {
             navigate('/');
         } else {
-            setError('Invalid credentials');
+            setError('Invalid credentials. Please try again.');
         }
     };
 
     return (
-        <div className="container" style={{ maxWidth: '450px' }}>
-            <div className="card" style={{ marginBottom: 0 }}>
-                {isLoading && <LoadingSpinner />}
-                <h1 style={{ fontSize: '2rem', marginBottom: '1.5rem' }}>Welcome Back</h1>
-                <p style={{ textAlign: 'center', color: 'var(--text-muted)', marginBottom: '2rem' }}>Login to manage your inventory</p>
-                
-                {error && <div style={{ 
-                    padding: '0.75rem', 
-                    background: 'hsla(0, 84%, 60%, 0.1)', 
-                    color: 'var(--danger)', 
-                    borderRadius: '8px', 
-                    marginBottom: '1.5rem',
-                    fontSize: '0.875rem',
-                    textAlign: 'center'
-                }}>{error}</div>}
+        <div className="auth-page">
+            {isLoading && <LoadingSpinner />}
 
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="email">Email Address</label>
-                        <input
-                            id="email"
-                            type="email"
-                            placeholder="name@company.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+            {/* Left: Hero */}
+            <div className="auth-hero">
+                <div className="auth-hero-grid" />
+                <div className="auth-hero-content">
+                    <div className="auth-hero-logo">ShopSmart</div>
+                    <p className="auth-hero-tagline">
+                        Your premium inventory management platform. Track, manage, and optimize your assets effortlessly.
+                    </p>
+                    <ul className="auth-hero-features">
+                        <li>Real-time inventory tracking</li>
+                        <li>Secure JWT authentication</li>
+                        <li>Full CRUD operations</li>
+                        <li>One-click checkout flow</li>
+                    </ul>
+                </div>
+            </div>
+
+            {/* Right: Form */}
+            <div className="auth-form-section">
+                <div className="auth-form-container">
+                    <div className="auth-form-header">
+                        <h2>Welcome Back</h2>
+                        <p>Sign in to manage your inventory</p>
                     </div>
-                    <div>
-                        <label htmlFor="password">Password</label>
-                        <input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <button type="submit" style={{ marginTop: '1rem' }}>Login to ShopSmart</button>
-                </form>
-                
-                <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                    Don&apos;t have an account? <Link to="/signup" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>Create Account</Link>
-                </p>
+
+                    {error && <div className="error-alert">{error}</div>}
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="email">Email Address</label>
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="name@company.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <button type="submit" style={{ width: '100%', marginTop: '0.5rem' }}>
+                            Sign In →
+                        </button>
+                    </form>
+
+                    <p className="auth-footer">
+                        Don&apos;t have an account?{' '}
+                        <Link to="/signup">Create Account</Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

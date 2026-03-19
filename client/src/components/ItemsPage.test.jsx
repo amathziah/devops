@@ -76,8 +76,8 @@ describe('ItemsPage Component', () => {
             </MemoryRouter>
         );
 
-        const nameInput = screen.getByLabelText(/Name:/i);
-        const descInput = screen.getByLabelText(/Description:/i);
+        const nameInput = screen.getByLabelText(/Item Name/i);
+        const descInput = screen.getByLabelText(/Description/i);
         const addButton = screen.getByRole('button', { name: /Add Item/i });
 
         fireEvent.change(nameInput, { target: { value: 'New Item' } });

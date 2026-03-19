@@ -2,64 +2,157 @@
 
 ```yaml
 - generic [ref=e4]:
-  - banner [ref=e5]:
-    - heading "ShopSmart CRUD App" [level=1] [ref=e6]
-    - button "Logout" [ref=e7] [cursor=pointer]
-  - generic [ref=e8]:
-    - heading "Add New Item" [level=2] [ref=e9]
-    - generic [ref=e10]:
-      - generic [ref=e11]:
-        - generic [ref=e12]: "Name:"
-        - textbox "Name:" [ref=e13]
-      - generic [ref=e14]:
-        - generic [ref=e15]: "Description:"
-        - textbox "Description:" [ref=e16]
-      - button "Add Item" [active] [ref=e17] [cursor=pointer]
-  - generic [ref=e18]:
-    - heading "Items (5)" [level=2] [ref=e19]
-    - list [ref=e20]:
-      - listitem [ref=e21]:
-        - generic [ref=e22]:
-          - generic [ref=e23]:
-            - strong [ref=e24]: E2E Item
-            - paragraph [ref=e25]: E2E Description
-            - generic [ref=e26]: "Created: 2/19/2026, 3:43:43 PM"
-          - generic [ref=e27]:
-            - button "Edit" [ref=e28] [cursor=pointer]
-            - button "Delete" [ref=e29] [cursor=pointer]
-      - listitem [ref=e30]:
-        - generic [ref=e31]:
-          - generic [ref=e32]:
-            - strong [ref=e33]: E2E Item
-            - paragraph [ref=e34]: E2E Description
-            - generic [ref=e35]: "Created: 2/19/2026, 3:48:06 PM"
+  - navigation [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]: ShopSmart
+      - generic [ref=e8]: Pro
+    - button "Logout" [ref=e10] [cursor=pointer]
+  - generic [ref=e11]:
+    - generic [ref=e12]:
+      - heading "ShopSmart CRUD App" [level=1] [ref=e13]
+      - paragraph [ref=e14]: Manage your inventory with ease
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - generic [ref=e17]: 📦
+        - generic [ref=e18]: "10"
+        - generic [ref=e19]: Total Items
+      - generic [ref=e20]:
+        - generic [ref=e21]: 🕐
+        - generic [ref=e22]: "2"
+        - generic [ref=e23]: Added Today
+      - generic [ref=e24]:
+        - generic [ref=e25]: ✅
+        - generic [ref=e26]: Active
+        - generic [ref=e27]: Status
+    - generic [ref=e28]:
+      - heading "✨ Create New Item" [level=2] [ref=e29]
+      - paragraph [ref=e30]: Add a new asset to your inventory tracking system.
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]: Item Name
+            - textbox "Item Name" [ref=e35]:
+              - /placeholder: e.g. MacBook Pro M4
           - generic [ref=e36]:
-            - button "Edit" [ref=e37] [cursor=pointer]
-            - button "Delete" [ref=e38] [cursor=pointer]
-      - listitem [ref=e39]:
-        - generic [ref=e40]:
-          - generic [ref=e41]:
-            - strong [ref=e42]: E2E Item
-            - paragraph [ref=e43]: E2E Description
-            - generic [ref=e44]: "Created: 2/19/2026, 3:49:30 PM"
-          - generic [ref=e45]:
-            - button "Edit" [ref=e46] [cursor=pointer]
-            - button "Delete" [ref=e47] [cursor=pointer]
-      - listitem [ref=e48]:
-        - generic [ref=e49]:
-          - generic [ref=e50]:
-            - strong [ref=e51]: Item to Delete
-            - generic [ref=e52]: "Created: 2/19/2026, 3:57:58 PM"
-          - generic [ref=e53]:
-            - button "Edit" [ref=e54] [cursor=pointer]
-            - button "Delete" [ref=e55] [cursor=pointer]
-      - listitem [ref=e56]:
-        - generic [ref=e57]:
-          - generic [ref=e58]:
-            - strong [ref=e59]: E2E Item
-            - paragraph [ref=e60]: E2E Description
-            - generic [ref=e61]: "Created: 2/19/2026, 3:57:58 PM"
-          - generic [ref=e62]:
-            - button "Edit" [ref=e63] [cursor=pointer]
-            - button "Delete" [ref=e64] [cursor=pointer]
+            - generic [ref=e37]: Description
+            - textbox "Description" [ref=e38]:
+              - /placeholder: e.g. Dev team workstation
+        - button "Add Item →" [ref=e39] [cursor=pointer]
+    - generic [ref=e41]:
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - heading "Inventory" [level=2] [ref=e44]
+          - generic [ref=e45]: 10 items total
+        - button "🛒 Checkout" [ref=e46] [cursor=pointer]
+      - list [ref=e47]:
+        - listitem [ref=e48]:
+          - generic [ref=e49]:
+            - generic [ref=e50]: 📦
+            - generic [ref=e51]: Active
+          - generic [ref=e52]:
+            - heading "E2E Item" [level=3] [ref=e53]
+            - paragraph [ref=e54]: E2E Description
+            - generic [ref=e55]: "Created: 2/19/2026, 3:43:43 PM"
+          - generic [ref=e56]:
+            - button "Edit" [ref=e57] [cursor=pointer]
+            - button "Delete" [ref=e58] [cursor=pointer]
+        - listitem [ref=e59]:
+          - generic [ref=e60]:
+            - generic [ref=e61]: 🔧
+            - generic [ref=e62]: Active
+          - generic [ref=e63]:
+            - heading "E2E Item" [level=3] [ref=e64]
+            - paragraph [ref=e65]: E2E Description
+            - generic [ref=e66]: "Created: 2/19/2026, 3:48:06 PM"
+          - generic [ref=e67]:
+            - button "Edit" [ref=e68] [cursor=pointer]
+            - button "Delete" [ref=e69] [cursor=pointer]
+        - listitem [ref=e70]:
+          - generic [ref=e71]:
+            - generic [ref=e72]: 💎
+            - generic [ref=e73]: Active
+          - generic [ref=e74]:
+            - heading "E2E Item" [level=3] [ref=e75]
+            - paragraph [ref=e76]: E2E Description
+            - generic [ref=e77]: "Created: 2/19/2026, 3:49:30 PM"
+          - generic [ref=e78]:
+            - button "Edit" [ref=e79] [cursor=pointer]
+            - button "Delete" [ref=e80] [cursor=pointer]
+        - listitem [ref=e81]:
+          - generic [ref=e82]:
+            - generic [ref=e83]: 🎯
+            - generic [ref=e84]: Active
+          - generic [ref=e85]:
+            - heading "E2E Item" [level=3] [ref=e86]
+            - paragraph [ref=e87]: E2E Description
+            - generic [ref=e88]: "Created: 2/19/2026, 3:57:58 PM"
+          - generic [ref=e89]:
+            - button "Edit" [ref=e90] [cursor=pointer]
+            - button "Delete" [ref=e91] [cursor=pointer]
+        - listitem [ref=e92]:
+          - generic [ref=e93]:
+            - generic [ref=e94]: ⚡
+            - generic [ref=e95]: Active
+          - generic [ref=e96]:
+            - heading "Laptop" [level=3] [ref=e97]
+            - paragraph [ref=e98]: High performance
+            - generic [ref=e99]: "Created: 3/17/2026, 10:52:27 PM"
+          - generic [ref=e100]:
+            - button "Edit" [ref=e101] [cursor=pointer]
+            - button "Delete" [ref=e102] [cursor=pointer]
+        - listitem [ref=e103]:
+          - generic [ref=e104]:
+            - generic [ref=e105]: 🔬
+            - generic [ref=e106]: Active
+          - generic [ref=e107]:
+            - heading "Mouse" [level=3] [ref=e108]
+            - paragraph [ref=e109]: Wireless optical
+            - generic [ref=e110]: "Created: 3/17/2026, 10:52:30 PM"
+          - generic [ref=e111]:
+            - button "Edit" [ref=e112] [cursor=pointer]
+            - button "Delete" [ref=e113] [cursor=pointer]
+        - listitem [ref=e114]:
+          - generic [ref=e115]:
+            - generic [ref=e116]: 🛡️
+            - generic [ref=e117]: Active
+          - generic [ref=e118]:
+            - heading "Premium Item 1" [level=3] [ref=e119]
+            - paragraph [ref=e120]: This is a premium item with glassmorphism.
+            - generic [ref=e121]: "Created: 3/17/2026, 10:53:37 PM"
+          - generic [ref=e122]:
+            - button "Edit" [ref=e123] [cursor=pointer]
+            - button "Delete" [ref=e124] [cursor=pointer]
+        - listitem [ref=e125]:
+          - generic [ref=e126]:
+            - generic [ref=e127]: 📡
+            - generic [ref=e128]: Active
+          - generic [ref=e129]:
+            - heading "Premium Item 2" [level=3] [ref=e130]
+            - paragraph [ref=e131]: Another premium item with micro-animations.
+            - generic [ref=e132]: "Created: 3/17/2026, 10:54:10 PM"
+          - generic [ref=e133]:
+            - button "Edit" [ref=e134] [cursor=pointer]
+            - button "Delete" [ref=e135] [cursor=pointer]
+        - listitem [ref=e136]:
+          - generic [ref=e137]:
+            - generic [ref=e138]: 📦
+            - generic [ref=e139]: Active
+          - generic [ref=e140]:
+            - heading "something" [level=3] [ref=e141]
+            - paragraph [ref=e142]: ssss
+            - generic [ref=e143]: "Created: 3/19/2026, 1:15:15 AM"
+          - generic [ref=e144]:
+            - button "Edit" [ref=e145] [cursor=pointer]
+            - button "Delete" [ref=e146] [cursor=pointer]
+        - listitem [ref=e147]:
+          - generic [ref=e148]:
+            - generic [ref=e149]: 🔧
+            - generic [ref=e150]: Active
+          - generic [ref=e151]:
+            - heading "Test Item 1773903529459" [level=3] [ref=e152]
+            - paragraph [ref=e153]: Premium testing item
+            - generic [ref=e154]: "Created: 3/19/2026, 12:28:50 PM"
+          - generic [ref=e155]:
+            - button "Edit" [ref=e156] [cursor=pointer]
+            - button "Delete" [ref=e157] [cursor=pointer]
 ```

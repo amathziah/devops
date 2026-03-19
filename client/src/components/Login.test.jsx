@@ -22,16 +22,16 @@ describe('Login Component', () => {
 
     it('renders login form', () => {
         render(<MockLogin />);
-        expect(screen.getByText(/Login/i, { selector: 'h2' })).toBeInTheDocument();
-        expect(screen.getByLabelText(/Email:/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/Password:/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Login/i })).toBeInTheDocument();
+        expect(screen.getByText(/Welcome Back/i, { selector: 'h2' })).toBeInTheDocument();
+        expect(screen.getByLabelText(/Email Address/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Sign In/i })).toBeInTheDocument();
     });
 
     it('handles input changes', () => {
         render(<MockLogin />);
-        const emailInput = screen.getByLabelText(/Email:/i);
-        const passwordInput = screen.getByLabelText(/Password:/i);
+        const emailInput = screen.getByLabelText(/Email Address/i);
+        const passwordInput = screen.getByLabelText(/Password/i);
 
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
         fireEvent.change(passwordInput, { target: { value: 'password123' } });
@@ -47,9 +47,9 @@ describe('Login Component', () => {
         });
 
         render(<MockLogin />);
-        const emailInput = screen.getByLabelText(/Email:/i);
-        const passwordInput = screen.getByLabelText(/Password:/i);
-        const submitButton = screen.getByRole('button', { name: /Login/i });
+        const emailInput = screen.getByLabelText(/Email Address/i);
+        const passwordInput = screen.getByLabelText(/Password/i);
+        const submitButton = screen.getByRole('button', { name: /Sign In/i });
 
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
         fireEvent.change(passwordInput, { target: { value: 'password123' } });
@@ -67,9 +67,9 @@ describe('Login Component', () => {
         });
 
         render(<MockLogin />);
-        const emailInput = screen.getByLabelText(/Email:/i);
-        const passwordInput = screen.getByLabelText(/Password:/i);
-        const submitButton = screen.getByRole('button', { name: /Login/i });
+        const emailInput = screen.getByLabelText(/Email Address/i);
+        const passwordInput = screen.getByLabelText(/Password/i);
+        const submitButton = screen.getByRole('button', { name: /Sign In/i });
 
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
         fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });

@@ -13,35 +13,35 @@ const ItemForm = ({ onAdd }) => {
     };
 
     return (
-        <div className="card" style={{ background: 'linear-gradient(to bottom right, var(--card-bg), hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.05))' }}>
-            <h2>Create New Asset</h2>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Add a new item to your decentralized inventory tracking system.</p>
+        <div className="form-card">
+            <h2>✨ Create New Item</h2>
+            <p className="form-subtitle">Add a new asset to your inventory tracking system.</p>
             <form onSubmit={handleSubmit}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                    <div>
-                        <label htmlFor="item-name">Asset Name</label>
+                <div className="form-row">
+                    <div className="form-group">
+                        <label htmlFor="item-name">Item Name</label>
                         <input
                             id="item-name"
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="e.g. Server Rack A1"
+                            placeholder="e.g. MacBook Pro M4"
                             required
                         />
                     </div>
-                    <div>
-                        <label htmlFor="item-desc">Reference / Desc</label>
+                    <div className="form-group">
+                        <label htmlFor="item-desc">Description</label>
                         <input
                             id="item-desc"
                             type="text"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder="e.g. Primary cluster"
+                            placeholder="e.g. Dev team workstation"
                         />
                     </div>
                 </div>
-                <button type="submit" className="primary-btn" style={{ width: '100%' }}>
-                    ✨ Deploy Item to Inventory
+                <button type="submit" style={{ width: '100%' }}>
+                    Add Item →
                 </button>
             </form>
         </div>
