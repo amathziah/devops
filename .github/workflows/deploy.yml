@@ -11,10 +11,38 @@ env:
   PROJECT_NAME: shopsmart
 
 jobs:
+  # ─── Lint (runs on push and PRs) ───────────────────────────────────────────
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Install backend deps
+        run: npm install
+        working-directory: server
+
+      - name: Lint backend
+        run: npm run lint
+        working-directory: server
+
+      - name: Install frontend deps
+        run: npm install
+        working-directory: client
+
+      - name: Lint frontend
+        run: npm run lint
+        working-directory: client
+
   # ─── Phase 1: Tests ────────────────────────────────────────────────────────
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    needs: lint
     steps:
       - uses: actions/checkout@v4
 
