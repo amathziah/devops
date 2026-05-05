@@ -5,10 +5,6 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.0"
-    }
   }
   backend "s3" {
     bucket = "shopsmart-tfstate-008165007254"
@@ -21,14 +17,10 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "random_id" "suffix" {
-  byte_length = 4
-}
-
 # ─── S3 ──────────────────────────────────────────────────────────────────────
 
 resource "aws_s3_bucket" "app" {
-  bucket        = "${var.project_name}-${random_id.suffix.hex}"
+  bucket        = "shopsmart-app-008165007254"
   force_destroy = true
 }
 
@@ -76,7 +68,7 @@ resource "aws_ecr_repository" "frontend" {
   }
 }
 
-# ─── Networking (default VPC) ─────────────────────────────────────────────────
+# ─── Networking (default VPC) ────────────────────────────────────────────────
 
 data "aws_vpc" "default" {
   default = true

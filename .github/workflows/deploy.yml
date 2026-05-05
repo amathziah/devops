@@ -86,6 +86,32 @@ jobs:
         run: terraform init
         working-directory: terraform
 
+      - name: Import existing AWS resources
+        working-directory: terraform
+        env:
+          TF_VAR_aws_region: ${{ secrets.AWS_REGION }}
+        run: |
+          VPC_ID=$(aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" --query "Vpcs[0].VpcId" --output text)
+
+          terraform import aws_s3_bucket.app shopsmart-app-008165007254 2>/dev/null || true
+          terraform import aws_s3_bucket_versioning.app shopsmart-app-008165007254 2>/dev/null || true
+          terraform import aws_s3_bucket_server_side_encryption_configuration.app shopsmart-app-008165007254 2>/dev/null || true
+          terraform import aws_s3_bucket_public_access_block.app shopsmart-app-008165007254 2>/dev/null || true
+
+          terraform import aws_ecr_repository.backend shopsmart-backend 2>/dev/null || true
+          terraform import aws_ecr_repository.frontend shopsmart-frontend 2>/dev/null || true
+
+          terraform import aws_iam_role.ecs_task_execution shopsmart-ecs-exec-role 2>/dev/null || true
+          terraform import aws_iam_role_policy_attachment.ecs_task_execution "shopsmart-ecs-exec-role/arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy" 2>/dev/null || true
+
+          terraform import aws_cloudwatch_log_group.ecs /ecs/shopsmart 2>/dev/null || true
+
+          CLUSTER_ARN=$(aws ecs describe-clusters --clusters shopsmart-cluster --query "clusters[0].clusterArn" --output text 2>/dev/null || echo "")
+          [ -n "$CLUSTER_ARN" ] && [ "$CLUSTER_ARN" != "None" ] && terraform import aws_ecs_cluster.main "$CLUSTER_ARN" 2>/dev/null || true
+
+          SG_ID=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=shopsmart-ecs-sg" "Name=vpc-id,Values=$VPC_ID" --query "SecurityGroups[0].GroupId" --output text 2>/dev/null || echo "")
+          [ -n "$SG_ID" ] && [ "$SG_ID" != "None" ] && terraform import aws_security_group.ecs "$SG_ID" 2>/dev/null || true
+
       - name: Terraform Validate
         run: terraform validate
         working-directory: terraform
