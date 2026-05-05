@@ -1,7 +1,19 @@
-output "backend_url" {
-  value = "http://localhost:${var.backend_port}"
+output "s3_bucket_name" {
+  value = aws_s3_bucket.app.bucket
 }
 
-output "frontend_url" {
-  value = "http://localhost:${var.frontend_port}"
+output "ecr_backend_url" {
+  value = aws_ecr_repository.backend.repository_url
+}
+
+output "ecr_frontend_url" {
+  value = aws_ecr_repository.frontend.repository_url
+}
+
+output "ecs_cluster_name" {
+  value = aws_ecs_cluster.main.name
+}
+
+output "ecs_service_name" {
+  value = aws_ecs_service.app.name
 }

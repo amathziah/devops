@@ -1,55 +1,211 @@
 terraform {
   required_version = ">= 1.0.0"
   required_providers {
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "~> 3.0.1"
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
     }
   }
 }
 
-provider "docker" {}
-
-locals {
-  full_project_name = "${var.project_name}-${var.environment}"
+provider "aws" {
+  region = var.aws_region
 }
 
-resource "docker_image" "backend" {
-  name         = var.backend_image
-  keep_locally = false
+resource "random_id" "suffix" {
+  byte_length = 4
 }
 
-resource "docker_image" "frontend" {
-  name         = var.frontend_image
-  keep_locally = false
+# ─── S3 ──────────────────────────────────────────────────────────────────────
+
+resource "aws_s3_bucket" "app" {
+  bucket        = "${var.project_name}-${random_id.suffix.hex}"
+  force_destroy = true
 }
 
-resource "docker_network" "private_network" {
-  name = "${local.full_project_name}_network"
-}
-
-resource "docker_container" "backend" {
-  image = docker_image.backend.image_id
-  name  = "${local.full_project_name}-backend"
-  networks_advanced {
-    name = docker_network.private_network.name
+resource "aws_s3_bucket_versioning" "app" {
+  bucket = aws_s3_bucket.app.id
+  versioning_configuration {
+    status = "Enabled"
   }
-  ports {
-    internal = 5000
-    external = var.backend_port
-  }
-  restart = "unless-stopped"
 }
 
-resource "docker_container" "frontend" {
-  image = docker_image.frontend.image_id
-  name  = "${local.full_project_name}-frontend"
-  networks_advanced {
-    name = docker_network.private_network.name
+resource "aws_s3_bucket_server_side_encryption_configuration" "app" {
+  bucket = aws_s3_bucket.app.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
   }
-  ports {
-    internal = 80
-    external = var.frontend_port
+}
+
+resource "aws_s3_bucket_public_access_block" "app" {
+  bucket                  = aws_s3_bucket.app.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# ─── ECR ─────────────────────────────────────────────────────────────────────
+
+resource "aws_ecr_repository" "backend" {
+  name                 = "${var.project_name}-backend"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+  image_scanning_configuration {
+    scan_on_push = true
   }
-  restart = "unless-stopped"
+}
+
+resource "aws_ecr_repository" "frontend" {
+  name                 = "${var.project_name}-frontend"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+# ─── Networking (default VPC) ─────────────────────────────────────────────────
+
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+resource "aws_security_group" "ecs" {
+  name   = "${var.project_name}-ecs-sg"
+  vpc_id = data.aws_vpc.default.id
+
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# ─── IAM ─────────────────────────────────────────────────────────────────────
+
+resource "aws_iam_role" "ecs_task_execution" {
+  name = "${var.project_name}-ecs-exec-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = { Service = "ecs-tasks.amazonaws.com" }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
+  role       = aws_iam_role.ecs_task_execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+# ─── ECS ─────────────────────────────────────────────────────────────────────
+
+resource "aws_ecs_cluster" "main" {
+  name = "${var.project_name}-cluster"
+}
+
+resource "aws_ecs_task_definition" "app" {
+  family                   = "${var.project_name}-task"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = "512"
+  memory                   = "1024"
+  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "backend"
+      image     = "${aws_ecr_repository.backend.repository_url}:latest"
+      essential = true
+      portMappings = [{ containerPort = 5000, hostPort = 5000, protocol = "tcp" }]
+      healthCheck = {
+        command     = ["CMD-SHELL", "node -e \"require('http').get('http://localhost:5000/health', r => process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 10
+      }
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/${var.project_name}"
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "backend"
+        }
+      }
+    },
+    {
+      name      = "frontend"
+      image     = "${aws_ecr_repository.frontend.repository_url}:latest"
+      essential = true
+      portMappings = [{ containerPort = 80, hostPort = 80, protocol = "tcp" }]
+      healthCheck = {
+        command     = ["CMD-SHELL", "wget -qO- http://localhost:80 || exit 1"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 10
+      }
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/${var.project_name}"
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "frontend"
+        }
+      }
+    }
+  ])
+}
+
+resource "aws_cloudwatch_log_group" "ecs" {
+  name              = "/ecs/${var.project_name}"
+  retention_in_days = 7
+}
+
+resource "aws_ecs_service" "app" {
+  name            = "${var.project_name}-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.app.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets          = data.aws_subnets.default.ids
+    security_groups  = [aws_security_group.ecs.id]
+    assign_public_ip = true
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.ecs_task_execution]
 }
