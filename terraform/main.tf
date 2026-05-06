@@ -184,7 +184,7 @@ resource "aws_lb_listener_rule" "backend_auth" {
   priority     = 10
 
   condition {
-    path_pattern { values = ["/auth/*"] }
+    path_pattern { values = ["/auth", "/auth/*"] }
   }
 
   action {
@@ -198,7 +198,7 @@ resource "aws_lb_listener_rule" "backend_items" {
   priority     = 20
 
   condition {
-    path_pattern { values = ["/items/*"] }
+    path_pattern { values = ["/items", "/items/*"] }
   }
 
   action {
