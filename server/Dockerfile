@@ -13,9 +13,12 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Create non-root user
-RUN groupadd -r nodejs && useradd -r -g nodejs nodejs
+# Create non-root user and give it ownership of /app
+RUN groupadd -r nodejs && useradd -r -g nodejs nodejs && chown nodejs:nodejs /app
 USER nodejs
+
+# Create writable data file
+RUN echo '{"users":[],"items":[]}' > /app/data.json
 
 # Copy only necessary files from builder
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
