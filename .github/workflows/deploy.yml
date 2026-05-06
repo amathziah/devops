@@ -224,7 +224,7 @@ jobs:
             008165007254.dkr.ecr.us-east-1.amazonaws.com/shopsmart-frontend:latest
             008165007254.dkr.ecr.us-east-1.amazonaws.com/shopsmart-frontend:${{ github.sha }}
           build-args: |
-            VITE_API_URL=${{ needs.terraform.outputs.alb_url }}
+            VITE_API_URL=http://shopsmart-alb-35311648.us-east-1.elb.amazonaws.com
 
   # ─── Phase 3 cont.: Deploy to ECS Fargate ─────────────────────────────────
   deploy:
