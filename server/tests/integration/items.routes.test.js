@@ -1,9 +1,9 @@
 const request = require('supertest');
 const app = require('../../src/app');
-const fs = require('fs');
 const jwt = require('jsonwebtoken');
 
-jest.mock('fs');
+jest.mock('../../src/utils/storage');
+const { readData, writeData } = require('../../src/utils/storage');
 
 describe('Items Routes', () => {
     let mockData;
@@ -14,13 +14,13 @@ describe('Items Routes', () => {
             items: [],
             users: [{ id: '1', email: 'test@example.com', password: 'hash' }]
         };
-        fs.readFileSync.mockImplementation(() => JSON.stringify(mockData));
-        fs.writeFileSync.mockImplementation((file, data) => {
-            mockData = JSON.parse(data);
+
+        readData.mockImplementation(async () => JSON.parse(JSON.stringify(mockData)));
+        writeData.mockImplementation(async (data) => {
+            mockData = JSON.parse(JSON.stringify(data));
             return true;
         });
 
-        // Generate a valid token for testing protected routes
         token = jwt.sign({ id: '1', email: 'test@example.com' }, process.env.JWT_SECRET || 'your-secret-key');
     });
 
@@ -40,11 +40,7 @@ describe('Items Routes', () => {
             const res = await request(app)
                 .post('/items')
                 .set('Authorization', `Bearer ${token}`)
-                .send({
-                    name: 'New Item',
-                    description: 'Desc',
-                    price: 10
-                });
+                .send({ name: 'New Item', description: 'Desc', price: 10 });
 
             expect(res.statusCode).toBe(201);
             expect(res.body.name).toBe('New Item');
@@ -54,9 +50,7 @@ describe('Items Routes', () => {
         it('should fail when not authenticated', async () => {
             const res = await request(app)
                 .post('/items')
-                .send({
-                    name: 'New Item'
-                });
+                .send({ name: 'New Item' });
 
             expect(res.statusCode).toBe(401);
         });
@@ -64,16 +58,12 @@ describe('Items Routes', () => {
 
     describe('PUT /items/:id', () => {
         it('should update an item when authenticated', async () => {
-            const item = { id: '1', name: 'Original', description: 'Desc' };
-            mockData.items.push(item);
+            mockData.items.push({ id: '1', name: 'Original', description: 'Desc' });
 
             const res = await request(app)
                 .put('/items/1')
                 .set('Authorization', `Bearer ${token}`)
-                .send({
-                    name: 'Updated',
-                    description: 'Updated Desc'
-                });
+                .send({ name: 'Updated', description: 'Updated Desc' });
 
             expect(res.statusCode).toBe(200);
             expect(res.body.name).toBe('Updated');
@@ -83,8 +73,7 @@ describe('Items Routes', () => {
 
     describe('DELETE /items/:id', () => {
         it('should delete an item when authenticated', async () => {
-            const item = { id: '1', name: 'To Delete' };
-            mockData.items.push(item);
+            mockData.items.push({ id: '1', name: 'To Delete' });
 
             const res = await request(app)
                 .delete('/items/1')
@@ -114,13 +103,13 @@ describe('Items Routes', () => {
         });
 
         it('should return 500 when readData fails', async () => {
-            fs.readFileSync.mockImplementationOnce(() => { throw new Error('Read Error'); });
+            readData.mockRejectedValueOnce(new Error('Read Error'));
             const res = await request(app).get('/items');
             expect(res.statusCode).toBe(500);
         });
 
         it('should return 500 when writeData fails on POST', async () => {
-            fs.writeFileSync.mockImplementationOnce(() => { throw new Error('Write Error'); });
+            writeData.mockResolvedValueOnce(false);
             const res = await request(app)
                 .post('/items')
                 .set('Authorization', `Bearer ${token}`)
