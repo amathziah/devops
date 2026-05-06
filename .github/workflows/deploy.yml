@@ -180,7 +180,8 @@ jobs:
           echo "ecr_frontend_url=$(terraform output -raw ecr_frontend_url)" >> $GITHUB_OUTPUT
           echo "ecs_cluster=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
           echo "ecs_service=$(terraform output -raw ecs_service_name)" >> $GITHUB_OUTPUT
-          ALB_DNS=$(aws elbv2 describe-load-balancers --names shopsmart-alb --query "LoadBalancers[0].DNSName" --output text --region us-east-1)
+          ALB_DNS=$(aws elbv2 describe-load-balancers --names shopsmart-alb --query "LoadBalancers[0].DNSName" --output text --region us-east-1 2>&1)
+          echo "ALB DNS resolved to: ${ALB_DNS}"
           echo "alb_url=http://${ALB_DNS}" >> $GITHUB_OUTPUT
 
   # ─── Phase 3: Docker Build & Push to ECR ──────────────────────────────────
