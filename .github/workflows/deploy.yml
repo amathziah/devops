@@ -89,6 +89,7 @@ jobs:
       ecr_frontend_url: ${{ steps.tf_outputs.outputs.ecr_frontend_url }}
       ecs_cluster: ${{ steps.tf_outputs.outputs.ecs_cluster }}
       ecs_service: ${{ steps.tf_outputs.outputs.ecs_service }}
+      alb_url: ${{ steps.tf_outputs.outputs.alb_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -140,6 +141,26 @@ jobs:
           SG_ID=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=shopsmart-ecs-sg" "Name=vpc-id,Values=$VPC_ID" --query "SecurityGroups[0].GroupId" --output text 2>/dev/null || echo "")
           [ -n "$SG_ID" ] && [ "$SG_ID" != "None" ] && terraform import aws_security_group.ecs "$SG_ID" 2>/dev/null || true
 
+          ALB_SG_ID=$(aws ec2 describe-security-groups --filters "Name=group-name,Values=shopsmart-alb-sg" "Name=vpc-id,Values=$VPC_ID" --query "SecurityGroups[0].GroupId" --output text 2>/dev/null || echo "")
+          [ -n "$ALB_SG_ID" ] && [ "$ALB_SG_ID" != "None" ] && terraform import aws_security_group.alb "$ALB_SG_ID" 2>/dev/null || true
+
+          ALB_ARN=$(aws elbv2 describe-load-balancers --names shopsmart-alb --query "LoadBalancers[0].LoadBalancerArn" --output text 2>/dev/null || echo "")
+          [ -n "$ALB_ARN" ] && [ "$ALB_ARN" != "None" ] && terraform import aws_lb.app "$ALB_ARN" 2>/dev/null || true
+
+          FE_TG_ARN=$(aws elbv2 describe-target-groups --names shopsmart-fe-tg --query "TargetGroups[0].TargetGroupArn" --output text 2>/dev/null || echo "")
+          [ -n "$FE_TG_ARN" ] && [ "$FE_TG_ARN" != "None" ] && terraform import aws_lb_target_group.frontend "$FE_TG_ARN" 2>/dev/null || true
+
+          BE_TG_ARN=$(aws elbv2 describe-target-groups --names shopsmart-be-tg --query "TargetGroups[0].TargetGroupArn" --output text 2>/dev/null || echo "")
+          [ -n "$BE_TG_ARN" ] && [ "$BE_TG_ARN" != "None" ] && terraform import aws_lb_target_group.backend "$BE_TG_ARN" 2>/dev/null || true
+
+          if [ -n "$ALB_ARN" ] && [ "$ALB_ARN" != "None" ]; then
+            FE_LISTENER_ARN=$(aws elbv2 describe-listeners --load-balancer-arn "$ALB_ARN" --query "Listeners[?Port==\`80\`].ListenerArn" --output text 2>/dev/null || echo "")
+            [ -n "$FE_LISTENER_ARN" ] && [ "$FE_LISTENER_ARN" != "None" ] && terraform import aws_lb_listener.frontend "$FE_LISTENER_ARN" 2>/dev/null || true
+
+            BE_LISTENER_ARN=$(aws elbv2 describe-listeners --load-balancer-arn "$ALB_ARN" --query "Listeners[?Port==\`5000\`].ListenerArn" --output text 2>/dev/null || echo "")
+            [ -n "$BE_LISTENER_ARN" ] && [ "$BE_LISTENER_ARN" != "None" ] && terraform import aws_lb_listener.backend "$BE_LISTENER_ARN" 2>/dev/null || true
+          fi
+
           terraform import aws_ecs_service.app "shopsmart-cluster/shopsmart-service" 2>/dev/null || true
 
       - name: Terraform Validate
@@ -162,6 +183,7 @@ jobs:
           echo "ecr_frontend_url=$(terraform output -raw ecr_frontend_url)" >> $GITHUB_OUTPUT
           echo "ecs_cluster=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
           echo "ecs_service=$(terraform output -raw ecs_service_name)" >> $GITHUB_OUTPUT
+          echo "alb_url=$(terraform output -raw backend_url)" >> $GITHUB_OUTPUT
 
   # ─── Phase 3: Docker Build & Push to ECR ──────────────────────────────────
   build-push:
@@ -202,6 +224,8 @@ jobs:
           tags: |
             008165007254.dkr.ecr.us-east-1.amazonaws.com/shopsmart-frontend:latest
             008165007254.dkr.ecr.us-east-1.amazonaws.com/shopsmart-frontend:${{ github.sha }}
+          build-args: |
+            VITE_API_URL=${{ needs.terraform.outputs.alb_url }}
 
   # ─── Phase 3 cont.: Deploy to ECS Fargate ─────────────────────────────────
   deploy:
