@@ -333,6 +333,5 @@ resource "aws_ecs_service" "app" {
   depends_on = [
     aws_iam_role_policy_attachment.ecs_task_execution,
     aws_lb_listener.frontend,
-    aws_lb_listener.backend,
   ]
 }
