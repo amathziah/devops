@@ -1,32 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
-const path = require('path');
 const authenticateToken = require('../middleware/auth.middleware');
-
-const DATA_FILE = path.join(__dirname, '../../data.json');
-
-// Helper function to read data from JSON file
-const readData = () => {
-  const data = fs.readFileSync(DATA_FILE, 'utf8');
-  return JSON.parse(data);
-};
-
-// Helper function to write data to JSON file
-const writeData = (data) => {
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-    return true;
-  } catch (error) {
-    console.error('Error writing data file:', error);
-    return false;
-  }
-};
+const { readData, writeData } = require('../utils/storage');
 
 // GET /items - Return all items
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const data = readData();
+    const data = await readData();
     res.json(data.items);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch items' });
@@ -34,9 +14,9 @@ router.get('/', (req, res) => {
 });
 
 // POST /items - Add a new item
-router.post('/', authenticateToken, (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   try {
-    const data = readData();
+    const data = await readData();
     const newItem = {
       id: Date.now().toString(),
       name: req.body.name,
@@ -46,7 +26,7 @@ router.post('/', authenticateToken, (req, res) => {
       createdAt: new Date().toISOString()
     };
     data.items.push(newItem);
-    if (writeData(data)) {
+    if (await writeData(data)) {
       res.status(201).json(newItem);
     } else {
       res.status(500).json({ error: 'Failed to save item' });
@@ -57,9 +37,9 @@ router.post('/', authenticateToken, (req, res) => {
 });
 
 // PUT /items/:id - Update an item
-router.put('/:id', authenticateToken, (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
-    const data = readData();
+    const data = await readData();
     const itemId = req.params.id;
     const itemIndex = data.items.findIndex(item => item.id === itemId);
 
@@ -76,7 +56,7 @@ router.put('/:id', authenticateToken, (req, res) => {
       updatedAt: new Date().toISOString()
     };
 
-    if (writeData(data)) {
+    if (await writeData(data)) {
       res.json(data.items[itemIndex]);
     } else {
       res.status(500).json({ error: 'Failed to update item' });
@@ -87,9 +67,9 @@ router.put('/:id', authenticateToken, (req, res) => {
 });
 
 // DELETE /items/:id - Delete an item
-router.delete('/:id', authenticateToken, (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
-    const data = readData();
+    const data = await readData();
     const itemId = req.params.id;
     const itemIndex = data.items.findIndex(item => item.id === itemId);
 
@@ -98,7 +78,7 @@ router.delete('/:id', authenticateToken, (req, res) => {
     }
 
     const deletedItem = data.items.splice(itemIndex, 1)[0];
-    if (writeData(data)) {
+    if (await writeData(data)) {
       res.json({ message: 'Item deleted successfully', item: deletedItem });
     } else {
       res.status(500).json({ error: 'Failed to delete item' });

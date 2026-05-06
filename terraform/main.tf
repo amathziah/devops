@@ -240,6 +240,20 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_role_policy" "ecs_s3_access" {
+  name = "${var.project_name}-ecs-s3-policy"
+  role = aws_iam_role.ecs_task_execution.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["s3:GetObject", "s3:PutObject"]
+      Resource = "${aws_s3_bucket.app.arn}/data.json"
+    }]
+  })
+}
+
 # ─── ECS ─────────────────────────────────────────────────────────────────────
 
 resource "aws_ecs_cluster" "main" {
@@ -260,6 +274,10 @@ resource "aws_ecs_task_definition" "app" {
       image     = "${aws_ecr_repository.backend.repository_url}:latest"
       essential = true
       portMappings = [{ containerPort = 5000, hostPort = 5000, protocol = "tcp" }]
+      environment = [
+        { name = "S3_BUCKET", value = aws_s3_bucket.app.bucket },
+        { name = "AWS_REGION", value = var.aws_region }
+      ]
       healthCheck = {
         command     = ["CMD-SHELL", "node -e \"require('http').get('http://localhost:5000/health', r => process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""]
         interval    = 30

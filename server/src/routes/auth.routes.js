@@ -1,31 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
-const path = require('path');
 const { hashPassword, comparePassword, generateToken } = require('../utils/auth.utils');
-
-const DATA_FILE = path.join(__dirname, '../../data.json');
-
-// Helper to read data
-const readData = () => {
-    try {
-        if (!fs.existsSync(DATA_FILE)) return { users: [], items: [] };
-        const data = fs.readFileSync(DATA_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        return { users: [], items: [] };
-    }
-};
-
-// Helper to write data
-const writeData = (data) => {
-    try {
-        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-        return true;
-    } catch (error) {
-        return false;
-    }
-};
+const { readData, writeData } = require('../utils/storage');
 
 // POST /signup
 router.post('/signup', async (req, res) => {
@@ -35,7 +11,7 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
-        const data = readData();
+        const data = await readData();
         if (!data.users) data.users = [];
 
         if (data.users.find(u => u.email === email)) {
@@ -51,7 +27,7 @@ router.post('/signup', async (req, res) => {
 
         data.users.push(newUser);
 
-        if (writeData(data)) {
+        if (await writeData(data)) {
             const token = generateToken(newUser);
             res.status(201).json({ token, user: { id: newUser.id, email: newUser.email } });
         } else {
@@ -67,7 +43,7 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        const data = readData();
+        const data = await readData();
 
         const user = data.users?.find(u => u.email === email);
         if (!user) {
