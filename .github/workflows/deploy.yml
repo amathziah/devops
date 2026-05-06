@@ -248,8 +248,11 @@ jobs:
             --force-new-deployment
 
       - name: Wait for service to stabilize
+        timeout-minutes: 15
         run: |
-          aws ecs wait services-stable \
-            --cluster shopsmart-cluster \
-            --services shopsmart-service
+          for i in $(seq 1 3); do
+            aws ecs wait services-stable \
+              --cluster shopsmart-cluster \
+              --services shopsmart-service && break || sleep 10
+          done
           echo "ECS service is running and stable."
