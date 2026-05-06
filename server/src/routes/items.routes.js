@@ -9,6 +9,7 @@ router.get('/', async (req, res) => {
     const data = await readData();
     res.json(data.items);
   } catch (error) {
+    console.error('[items GET error]', error);
     res.status(500).json({ error: 'Failed to fetch items' });
   }
 });
