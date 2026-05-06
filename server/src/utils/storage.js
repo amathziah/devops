@@ -1,8 +1,11 @@
 const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3');
+const fs = require('fs');
+const path = require('path');
 
 const BUCKET = process.env.S3_BUCKET;
 const KEY = 'data.json';
 const EMPTY = { users: [], items: [] };
+const LOCAL_FILE = path.join(__dirname, '../../data.json');
 
 const s3 = new S3Client({ region: process.env.AWS_REGION || 'us-east-1' });
 
@@ -15,7 +18,14 @@ const streamToString = (stream) =>
   });
 
 const readData = async () => {
-  if (!BUCKET) return { ...EMPTY };
+  if (!BUCKET) {
+    try {
+      if (!fs.existsSync(LOCAL_FILE)) return { ...EMPTY };
+      return JSON.parse(fs.readFileSync(LOCAL_FILE, 'utf8'));
+    } catch {
+      return { ...EMPTY };
+    }
+  }
   try {
     const res = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: KEY }));
     const body = await streamToString(res.Body);
@@ -27,7 +37,10 @@ const readData = async () => {
 };
 
 const writeData = async (data) => {
-  if (!BUCKET) return false;
+  if (!BUCKET) {
+    fs.writeFileSync(LOCAL_FILE, JSON.stringify(data, null, 2));
+    return true;
+  }
   await s3.send(new PutObjectCommand({
     Bucket: BUCKET,
     Key: KEY,
