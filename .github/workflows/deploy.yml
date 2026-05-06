@@ -156,9 +156,6 @@ jobs:
           if [ -n "$ALB_ARN" ] && [ "$ALB_ARN" != "None" ]; then
             FE_LISTENER_ARN=$(aws elbv2 describe-listeners --load-balancer-arn "$ALB_ARN" --query "Listeners[?Port==\`80\`].ListenerArn" --output text 2>/dev/null || echo "")
             [ -n "$FE_LISTENER_ARN" ] && [ "$FE_LISTENER_ARN" != "None" ] && terraform import aws_lb_listener.frontend "$FE_LISTENER_ARN" 2>/dev/null || true
-
-            BE_LISTENER_ARN=$(aws elbv2 describe-listeners --load-balancer-arn "$ALB_ARN" --query "Listeners[?Port==\`5000\`].ListenerArn" --output text 2>/dev/null || echo "")
-            [ -n "$BE_LISTENER_ARN" ] && [ "$BE_LISTENER_ARN" != "None" ] && terraform import aws_lb_listener.backend "$BE_LISTENER_ARN" 2>/dev/null || true
           fi
 
           terraform import aws_ecs_service.app "shopsmart-cluster/shopsmart-service" 2>/dev/null || true
@@ -183,7 +180,7 @@ jobs:
           echo "ecr_frontend_url=$(terraform output -raw ecr_frontend_url)" >> $GITHUB_OUTPUT
           echo "ecs_cluster=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
           echo "ecs_service=$(terraform output -raw ecs_service_name)" >> $GITHUB_OUTPUT
-          echo "alb_url=$(terraform output -raw backend_url)" >> $GITHUB_OUTPUT
+          echo "alb_url=$(terraform output -raw frontend_url)" >> $GITHUB_OUTPUT
 
   # ─── Phase 3: Docker Build & Push to ECR ──────────────────────────────────
   build-push:

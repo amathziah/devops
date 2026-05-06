@@ -92,13 +92,6 @@ resource "aws_security_group" "alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    from_port   = 5000
-    to_port     = 5000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -186,12 +179,43 @@ resource "aws_lb_listener" "frontend" {
   }
 }
 
-resource "aws_lb_listener" "backend" {
-  load_balancer_arn = aws_lb.app.arn
-  port              = 5000
-  protocol          = "HTTP"
+resource "aws_lb_listener_rule" "backend_auth" {
+  listener_arn = aws_lb_listener.frontend.arn
+  priority     = 10
 
-  default_action {
+  condition {
+    path_pattern { values = ["/auth/*"] }
+  }
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "backend_items" {
+  listener_arn = aws_lb_listener.frontend.arn
+  priority     = 20
+
+  condition {
+    path_pattern { values = ["/items/*"] }
+  }
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "backend_health" {
+  listener_arn = aws_lb_listener.frontend.arn
+  priority     = 30
+
+  condition {
+    path_pattern { values = ["/health"] }
+  }
+
+  action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.backend.arn
   }

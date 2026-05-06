@@ -23,5 +23,5 @@ output "frontend_url" {
 }
 
 output "backend_url" {
-  value = "http://${aws_lb.app.dns_name}:5000"
+  value = "http://${aws_lb.app.dns_name}"
 }
