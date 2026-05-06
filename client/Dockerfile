@@ -10,24 +10,15 @@ COPY . .
 RUN npm run build
 
 # --- Production Stage ---
-FROM nginx:alpine
-
-RUN adduser -D staticuser && \
-    chown -R staticuser:staticuser /usr/share/nginx/html && \
-    chown -R staticuser:staticuser /var/cache/nginx && \
-    chown -R staticuser:staticuser /var/log/nginx && \
-    chown -R staticuser:staticuser /etc/nginx/conf.d && \
-    mkdir -p /tmp/client_temp /tmp/proxy_temp /tmp/fastcgi_temp /tmp/uwsgi_temp /tmp/scgi_temp && \
-    chown -R staticuser:staticuser /tmp
+# nginx-unprivileged runs as non-root (uid 101) on port 8080 out of the box
+FROM nginxinc/nginx-unprivileged:alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-USER staticuser
-
-EXPOSE 80
+EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -qO- http://localhost:80 || exit 1
+  CMD wget -qO- http://localhost:8080 || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]

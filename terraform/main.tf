@@ -93,8 +93,8 @@ resource "aws_security_group" "ecs" {
   }
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -137,7 +137,7 @@ resource "aws_ecs_task_definition" "app" {
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "512"
-  memory                   = "1024"
+  memory                   = "2048"
   execution_role_arn       = aws_iam_role.ecs_task_execution.arn
 
   container_definitions = jsonencode([
@@ -166,9 +166,9 @@ resource "aws_ecs_task_definition" "app" {
       name      = "frontend"
       image     = "${aws_ecr_repository.frontend.repository_url}:latest"
       essential = true
-      portMappings = [{ containerPort = 80, hostPort = 80, protocol = "tcp" }]
+      portMappings = [{ containerPort = 8080, hostPort = 8080, protocol = "tcp" }]
       healthCheck = {
-        command     = ["CMD-SHELL", "wget -qO- http://localhost:80 || exit 1"]
+        command     = ["CMD-SHELL", "wget -qO- http://localhost:8080 || exit 1"]
         interval    = 30
         timeout     = 5
         retries     = 3
