@@ -1,8 +1,15 @@
 # ShopSmart — Inventory Management Platform
 
-ShopSmart is a full-stack inventory management app with a production-grade DevOps pipeline featuring automated testing, infrastructure-as-code, and continuous deployment to AWS ECS Fargate.
+An inventory management app used as the payload for the part I actually care about: a
+reproducible path from `git push` to running containers on AWS, with nothing done by hand.
 
-**Live URL:** http://shopsmart-alb-35311648.us-east-1.elb.amazonaws.com
+Every AWS resource is declared in Terraform — there is no console-clicked state anywhere.
+A push to `main` lints, tests, plans and applies infrastructure, builds both images, pushes
+them to ECR, then force-redeploys the ECS service and blocks until it reports stable.
+
+> **Note on the live demo:** the AWS stack is torn down between demos — an ALB plus
+> Fargate tasks bill by the hour. `terraform apply` recreates the whole environment
+> from scratch in a few minutes, which is rather the point of defining it as code.
 
 ## Stack
 
@@ -105,7 +112,7 @@ devops/
 ├── server/               # Node.js backend (Express)
 │   ├── src/
 │   ├── Dockerfile
-│   └── data.json         # File-based storage (dev/demo only)
+│   └── (data.json)       # Local dev store — gitignored, created on first write
 ├── terraform/            # Infrastructure as code
 │   ├── main.tf
 │   ├── variables.tf
@@ -114,3 +121,30 @@ devops/
 └── .github/workflows/
     └── deploy.yml        # CI/CD pipeline
 ```
+
+## Design notes and known limits
+
+Things I decided deliberately, and things I would fix next. Stating them is cheaper than
+having a reviewer find them.
+
+**Least-privilege IAM.** The ECS task role can call `s3:GetObject` and `s3:PutObject` on
+exactly one object — `${bucket}/data.json` — rather than the bucket as a whole. Bucket
+versioning and server-side encryption are on, and public access is fully blocked.
+
+**Persistence is a single JSON object in S3.** This is the main weakness. Each mutation
+reads the whole document, edits it in memory and writes it back, with no compare-and-swap.
+Two concurrent writers both read, both write, and the second silently discards the first —
+a textbook lost update. Writes are also O(n) in the dataset.
+
+Two ways out, in increasing order of effort:
+1. **Conditional writes.** S3 supports `If-Match` on `PutObject`, so the write can carry the
+   ETag read earlier and fail loudly on conflict instead of clobbering. Retry on 412.
+2. **DynamoDB.** Per-item reads and writes remove the race and the O(n) rewrite entirely,
+   and give real query access. This is the right answer for anything beyond a demo.
+
+**Single-task service.** The ECS service runs one task, so a deploy is a brief interruption
+rather than a true rolling update. Raising desired count and adding a deployment circuit
+breaker is the fix.
+
+**Secrets.** `JWT_SECRET` is passed as a task environment variable. For anything real it
+belongs in Secrets Manager or SSM Parameter Store, referenced by ARN in the task definition.

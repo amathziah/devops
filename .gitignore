@@ -8,3 +8,6 @@ coverage
 test-results/
 playwright-report/
 *.log
+
+# Local dev datastore (created at runtime; never commit real data)
+server/data.json
