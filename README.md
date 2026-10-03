@@ -39,19 +39,15 @@ Application Load Balancer (stable DNS, port 80)
 
 ## CI/CD Pipeline
 
-Lint and tests run on every push and pull request. The three jobs that touch AWS —
-Terraform, image build, ECS deploy — run **only on explicit intent**: a manual run from
-the Actions tab, or a commit message containing `[deploy]`.
+Lint and tests run on every push and pull request. The three jobs that touch AWS --
+Terraform, image build and ECS deploy -- run **only from a manual run** of the workflow
+(Actions tab, "Run workflow").
 
-That gate exists because it was learned the expensive way: a documentation-only commit
-previously triggered a full `terraform apply`, standing up an ALB and Fargate tasks that
-billed by the hour until someone noticed. Provisioning should be a decision, not a side
-effect of editing a README.
-
-```bash
-git commit -m "feat: add stock alerts [deploy]"   # provisions and deploys
-git commit -m "docs: clarify setup steps"         # lint + test only
-```
+That gate exists because it was learned the expensive way, twice. A documentation-only
+commit once triggered a full apply, standing up an ALB and Fargate tasks that billed by
+the hour. The first fix accepted a marker token in the commit message -- and promptly
+fired on the commit that documented the token, because the message contained it. Matching
+prose is not a safe trigger for spending money; an explicit button press is.
 
 When a deploy does run, it:
 
