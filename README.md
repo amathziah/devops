@@ -39,7 +39,21 @@ Application Load Balancer (stable DNS, port 80)
 
 ## CI/CD Pipeline
 
-Every push to `main` automatically:
+Lint and tests run on every push and pull request. The three jobs that touch AWS —
+Terraform, image build, ECS deploy — run **only on explicit intent**: a manual run from
+the Actions tab, or a commit message containing `[deploy]`.
+
+That gate exists because it was learned the expensive way: a documentation-only commit
+previously triggered a full `terraform apply`, standing up an ALB and Fargate tasks that
+billed by the hour until someone noticed. Provisioning should be a decision, not a side
+effect of editing a README.
+
+```bash
+git commit -m "feat: add stock alerts [deploy]"   # provisions and deploys
+git commit -m "docs: clarify setup steps"         # lint + test only
+```
+
+When a deploy does run, it:
 
 1. **Lint** — ESLint on frontend and backend
 2. **Test** — Unit and integration tests with coverage reports uploaded as artifacts
